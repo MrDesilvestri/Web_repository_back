@@ -1,14 +1,16 @@
 package com.web.back.CRUD;
+
 import java.util.List;
-import org.springframework.data.repository.Repository;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.web.back.Entities.Usuario;
 
-public interface UsuarioRepository extends Repository<Usuario, Integer>{
-    List <Usuario> findAll();
-    Usuario findOne(int id);
+public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
+
+    List<Usuario> findAll();
+    Optional<Usuario> findById(Long id);
     Usuario save(Usuario usuario);
-    void update(Usuario usuario);
-    Usuario findByEmail(String email);
-    void delete(Usuario usuario);
+    void deleteById(long id);
 }

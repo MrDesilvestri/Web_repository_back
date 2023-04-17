@@ -1,13 +1,16 @@
 package com.web.back.CRUD;
+
 import java.util.List;
-import org.springframework.data.repository.Repository;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.web.back.Entities.Comentario;
-import com.web.back.Entities.Usuario;
-public interface ComentarioRepository extends Repository<Comentario, Integer>{
-    List<Comentario>findAll();
-    List<Comentario> findByUsuario(Usuario usuario);
-    List<Comentario> findByCancha(int id);
+
+public interface ComentarioRepository extends JpaRepository<Comentario, Integer> {
+    List<Comentario> findAll();
+    Optional<Comentario> findById(Long id);
+    void deleteById(long id);
     Comentario save(Comentario comentario);
     void delete(Comentario comentario);
 }

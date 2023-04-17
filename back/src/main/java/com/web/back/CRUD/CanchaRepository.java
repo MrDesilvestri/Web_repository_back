@@ -1,13 +1,17 @@
 package com.web.back.CRUD;
+import java.math.BigDecimal;
 import java.util.List;
-import org.springframework.data.repository.Repository;
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.web.back.Entities.Cancha;
 
-public interface CanchaRepository extends Repository<Cancha, Integer>{
-    List<Cancha> findAll();
-    Cancha findOne(int id);
-    void update(Cancha cancha);
-    Cancha save(Cancha cancha);
-    void delete(Cancha cancha);
+public interface CanchaRepository extends JpaRepository<Cancha, Integer> {
+    List<Cancha> findByNombre(String nombre);
+    List<Cancha> findByUbicacion(String ubicacion);
+    List<Cancha> findByPrecioHoraLessThan(BigDecimal precio);
+    void deleteById(long id);
+    Optional<Cancha> findById(long id);
+    Cancha findByIdC(long id);
 }

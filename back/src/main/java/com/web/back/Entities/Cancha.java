@@ -3,32 +3,28 @@ package com.web.back.Entities;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
-@Table(name = "cancha")
+@Table(name = "canchas")
 public class Cancha {
+
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column
-    private String nombre;
-    @Column
-    private String descripcion;
-    @Column
-    private String ubicacion;
-    @Column
-    private BigDecimal precioHora;
-    
-    // constructor vacío
-    public Cancha() {}
 
-    // constructor con parámetros
-    public Cancha(String nombre, String descripcion, String ubicacion, BigDecimal precioHora) {
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.ubicacion = ubicacion;
-        this.precioHora = precioHora;
+    private String nombre;
+    private String descripcion;
+    private String ubicacion;
+    private BigDecimal precioHora;
+
+    @OneToMany(mappedBy = "cancha", cascade = CascadeType.ALL)
+    private List<Reserva> reservas;
+
+    @OneToMany(mappedBy = "cancha", cascade = CascadeType.ALL)
+    private List<Comentario> comentarios;
+
+    public Cancha() {
     }
 
     public int getId() {
@@ -71,4 +67,21 @@ public class Cancha {
         this.precioHora = precioHora;
     }
 
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
+    }
+
+    public List<Comentario> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(List<Comentario> comentarios) {
+        this.comentarios = comentarios;
+    }
+
+    
 }

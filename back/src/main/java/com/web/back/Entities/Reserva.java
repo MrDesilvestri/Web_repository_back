@@ -1,78 +1,57 @@
 package com.web.back.Entities;
 import jakarta.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "reserva")
+@Table(name = "reservas")
 public class Reserva {
+
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column
-    private Timestamp fechaInicio;
-    @Column
-    private Timestamp fechaFin;
-    
+
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
-    
+
     @ManyToOne
-    @JoinColumn(name = "cancha_id")
+    @JoinColumn(name = "cancha_id", nullable = false)
     private Cancha cancha;
-    
-    // constructor vacío
-    public Reserva() {}
 
-    // constructor con parámetros
-    public Reserva(Timestamp fechaInicio, Timestamp fechaFin, Usuario usuario, Cancha cancha) {
-        this.fechaInicio = fechaInicio;
-        this.fechaFin = fechaFin;
-        this.usuario = usuario;
-        this.cancha = cancha;
+    private LocalDateTime fechaInicio;
+    private LocalDateTime fechaFin;
+    public Reserva() {
     }
-
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
-
-    public Timestamp getFechaInicio() {
-        return fechaInicio;
-    }
-
-    public void setFechaInicio(Timestamp fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
-
-    public Timestamp getFechaFin() {
-        return fechaFin;
-    }
-
-    public void setFechaFin(Timestamp fechaFin) {
-        this.fechaFin = fechaFin;
-    }
-
     public Usuario getUsuario() {
         return usuario;
     }
-
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
     public Cancha getCancha() {
         return cancha;
     }
-
     public void setCancha(Cancha cancha) {
         this.cancha = cancha;
     }
-    
-    
+    public LocalDateTime getFechaInicio() {
+        return fechaInicio;
+    }
+    public void setFechaInicio(LocalDateTime fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+    public LocalDateTime getFechaFin() {
+        return fechaFin;
+    }
+    public void setFechaFin(LocalDateTime fechaFin) {
+        this.fechaFin = fechaFin;
+    }
 
+    
 }

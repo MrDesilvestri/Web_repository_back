@@ -1,31 +1,30 @@
 package com.web.back.Entities;
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "usuario")
+@Table(name = "usuarios")
 public class Usuario {
+
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column
-    private String nombre;
-    @Column
-    private String email;
-    @Column
-    private String password;
-    @Column
-    private String telefono;
-    
-    // constructor vacío
-    public Usuario() {}
 
-    // constructor con parámetros
-    public Usuario(String nombre, String email, String password, String telefono) {
-        this.nombre = nombre;
-        this.email = email;
-        this.password = password;
-        this.telefono = telefono;
+    private String nombre;
+    private String email;
+    private String password;
+    private String telefono;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<Reserva> reservas;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<Comentario> comentarios;
+
+    
+
+    public Usuario() {
     }
 
     public int getId() {
@@ -67,5 +66,22 @@ public class Usuario {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
+
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+
+    public void setReservas(List<Reserva> reservas) {
+        this.reservas = reservas;
+    }
+
+    public List<Comentario> getComentarios() {
+        return comentarios;
+    }
+
+    public void setComentarios(List<Comentario> comentarios) {
+        this.comentarios = comentarios;
+    }
+
     
 }

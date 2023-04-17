@@ -1,15 +1,22 @@
 package com.web.back.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.web.back.Entities.Cancha;
 
-public interface CanchaService{
-     //para Cancha
+public interface CanchaService {
+    
+    public Cancha guardarCancha(Cancha cancha);
+    
+    public Optional<Cancha> buscarCanchaPorId(Long id);
 
-     public void insertarCancha(Cancha cancha);
-     public void actualizarCancha(Cancha cancha);
-     public void eliminarCancha(Cancha cancha);
-     public Cancha obtenerCanchaPorId(int id);
-     public List<Cancha> obtenerTodasLasCanchas();
+    public Cancha buscarCanchaPorIdC(Long id);
+    
+    public List<Cancha> buscarTodasLasCanchas();
+    
+    public void eliminarCancha(Long id);
+    
+    public Cancha actualizarCancha(long canchaID, Cancha cancha);
+    
 }
