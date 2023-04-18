@@ -23,11 +23,11 @@ public class Reserva {
     @JoinColumn(name = "cancha_id")
     private Cancha cancha;
     @Column(name = "fecha_inicio")
-    private LocalDate fechaInicio;
+    private LocalDateTime fechaInicio;
     @Column(name = "fecha_fin")
-    private LocalDate fechaFin;
+    private LocalDateTime fechaFin;
 
-    public Reserva(Usuario usuario, Cancha cancha, LocalDate fechaInicio, LocalDate fechaFin) {
+    public Reserva(Usuario usuario, Cancha cancha, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         this.usuario = usuario;
         this.cancha = cancha;
         this.fechaInicio = fechaInicio;

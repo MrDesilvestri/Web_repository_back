@@ -21,7 +21,11 @@ public class CanchaController {
     @GetMapping("/all")
     private ResponseEntity<?> listAll(){
         List<Cancha> cancha = canchaService.listAll();
-        return ResponseEntity.ok(cancha);
+        if (cancha.size()>0){
+            return ResponseEntity.ok(cancha);
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron canchas en la base de datos");
+        }
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerCancha(@PathVariable int id) {

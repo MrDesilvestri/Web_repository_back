@@ -32,7 +32,11 @@ public class UsuarioController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllUsuarios() {
         List<Usuario> usuarios = usuarioService.listAll();
-        return ResponseEntity.status(HttpStatus.OK).body(usuarios);
+        if (usuarios.size()>0){
+            return ResponseEntity.status(HttpStatus.OK).body(usuarios);
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontraron usuarios en la base de datos");
+        }
     }
     
     // Endpoint para obtener un usuario por ID
