@@ -1,18 +1,19 @@
 package com.web.back.Service;
 import java.util.List;
 import java.util.Optional;
+
+import com.web.back.Entities.Cancha;
 import com.web.back.Entities.Comentario;
 
 public interface ComentarioService {
+    List<Comentario> listAll();
     
-    public Comentario guardarComentario(Comentario comentario);
+    Comentario guardarComentario(Comentario comentario);
     
-    public Optional<Comentario> buscarComentarioPorId(int id);
+    Comentario listById(int id);
     
-    public List<Comentario> buscarTodosLosComentarios();
+    void eliminarComentario(int id);
     
-    public void eliminarComentario(long id);
-    
-    public Comentario actualizarComentario(long id, Comentario comentario);
+    Comentario actualizarComentario(Comentario comentario);
     
 }

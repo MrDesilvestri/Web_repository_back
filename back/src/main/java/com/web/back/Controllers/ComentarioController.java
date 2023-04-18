@@ -23,15 +23,12 @@ import com.web.back.Service.ComentarioService;
 @RequestMapping("/comentario")
 public class ComentarioController {
 
-    @Autowired
-    private ComentarioService comentarioService;
+    private final ComentarioService comentarioService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Optional<Comentario>> getComentarioById(@PathVariable(value = "id") int comentarioId)
-            throws ComentarioNotFoundException {
-        Optional<Comentario> comentario = comentarioService.buscarComentarioPorId(comentarioId);
-        return ResponseEntity.ok().body(comentario);
+    public ComentarioController(ComentarioService comentarioService) {
+        this.comentarioService = comentarioService;
     }
+
 
     @PostMapping("/")
     public Comentario createComentario(@RequestBody Comentario comentario) {
@@ -39,16 +36,16 @@ public class ComentarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Comentario> updateComentario(@PathVariable(value = "id") Long comentarioId,
-            @RequestBody Comentario comentario) throws ComentarioNotFoundException {
-        Comentario updatedComentario = comentarioService.actualizarComentario(comentarioId, comentario);
+    public ResponseEntity<Comentario> updateComentario(@PathVariable int id,@RequestBody Comentario comentario) throws ComentarioNotFoundException {
+        comentario.setId(id);
+        Comentario updatedComentario = comentarioService.actualizarComentario(comentario);
         return ResponseEntity.ok(updatedComentario);
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, Boolean> deleteComentario(@PathVariable(value = "id") Long comentarioId)
+    public Map<String, Boolean> deleteComentario(@PathVariable int id)
             throws ComentarioNotFoundException {
-        comentarioService.eliminarComentario(comentarioId);
+        comentarioService.eliminarComentario(id);
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return response;
