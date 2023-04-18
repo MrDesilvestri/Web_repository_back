@@ -60,6 +60,7 @@ public class ReservaController {
     public ResponseEntity<?> crearReserva(@RequestBody ReservaDTO reserva) {
         Usuario usuario = usuarioService.listById(reserva.getUsuarioId());
         Cancha cancha = canchaService.listById(reserva.getCanchaId());
+
         Reserva nuevaReserva = new Reserva(usuario, cancha, reserva.getFechaInicio(), reserva.getFechaFin());
         reservaService.guardarReserva(nuevaReserva);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Nueva reserva creada : "+nuevaReserva);
