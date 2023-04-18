@@ -8,7 +8,7 @@ public interface CanchaService {
 
     List<Cancha> listAll();
 
-    public Cancha guardarCancha(Cancha cancha);
+    Cancha guardarCancha(Cancha cancha);
 
     Cancha listById(int id);
 

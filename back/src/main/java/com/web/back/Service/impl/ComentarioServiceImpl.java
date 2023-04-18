@@ -6,14 +6,8 @@ import com.web.back.repository.ComentarioRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 @Service
 public class ComentarioServiceImpl implements ComentarioService {
-    private final ComentarioRepository comentarioRepository;
-
-    public ComentarioServiceImpl(ComentarioRepository comentarioRepository) {
-        this.comentarioRepository = comentarioRepository;
-    }
 
     @Override
     public List<Comentario> listAll() {
