@@ -5,15 +5,13 @@ import java.util.Optional;
 import com.web.back.Entities.Usuario;
 
 public interface UsuarioService {
+
+    List<Usuario> listAll();
+
+    Usuario listById(int id);
+    Usuario guardarUsuario(Usuario usuario);
+
+    Usuario actualizarUsuario(Usuario usuario);
     
-    public Usuario guardarUsuario(Usuario usuario);
-    
-    public Optional<Usuario> buscarUsuarioPorId(Long usuarioId);
-    
-    public List<Usuario> buscarTodosLosUsuarios();
-    
-    public void eliminarUsuario(long id);
-    
-    public Usuario actualizarUsuario(long id, Usuario usuario);
-    
+    void eliminarUsuario(int id);
 }

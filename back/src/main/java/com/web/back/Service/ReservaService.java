@@ -4,17 +4,16 @@ import java.util.Optional;
 import com.web.back.Entities.Reserva;
 
 public interface ReservaService {
+    List<Reserva> listAll();
+
+    public Reserva listById(int id);
     
     public Reserva guardarReserva(Reserva reserva);
-    
-    public Optional<Reserva> buscarReservaPorId(Long id);
 
-    public Reserva buscarReservaPorIdC(Long id);
-    
-    public List<Reserva> buscarTodasLasReservas();
-    
-    public void eliminarReserva(Long id);
-    
     public Reserva actualizarReserva(Reserva reserva);
+
+    public void eliminarReserva(int id);
+    
+
     
 }

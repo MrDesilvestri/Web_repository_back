@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,43 +22,45 @@ import com.web.back.Service.UsuarioService;
 @RequestMapping("/usuarios")
 public class UsuarioController {
     
-    @Autowired
-    private UsuarioService usuarioService;
-    
+    private final UsuarioService usuarioService;
+
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
+
     // Endpoint para obtener todos los usuarios
-    @GetMapping("/")
-    public ResponseEntity<List<Usuario>> getAllUsuarios() {
-        List<Usuario> usuarios = usuarioService.buscarTodosLosUsuarios();
-        return ResponseEntity.ok(usuarios);
+    @GetMapping
+    public ResponseEntity<?> getAllUsuarios() {
+        List<Usuario> usuarios = usuarioService.listAll();
+        return ResponseEntity.status(HttpStatus.OK).body(usuarios);
     }
     
     // Endpoint para obtener un usuario por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Usuario>> getUsuarioById(@PathVariable(value = "id") Long usuarioId) {
-        Optional<Usuario> usuario = usuarioService.buscarUsuarioPorId(usuarioId);
-        return ResponseEntity.ok(usuario);
+    public ResponseEntity<?> getUsuarioById(@PathVariable int id) {
+        Usuario usuario = usuarioService.listById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(usuario);
     }
     
     // Endpoint para crear un usuario
-    @PostMapping("/")
+    @PostMapping("/crear_usuario")
     public ResponseEntity<Usuario> createUsuario(@RequestBody Usuario usuario) {
-        Usuario newUsuario = usuarioService.guardarUsuario(usuario);
-        return ResponseEntity.ok(newUsuario);
+        Usuario UsuarioCreate = usuarioService.guardarUsuario(usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioCreate);
     }
     
     // Endpoint para actualizar un usuario por ID
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> updateUsuario(@PathVariable(value = "id") Long usuarioId, 
-                                                  @RequestBody Usuario usuario) {
-        Usuario updatedUsuario = usuarioService.actualizarUsuario(usuarioId, usuario);
+    public ResponseEntity<Usuario> updateUsuario(@PathVariable int id, @RequestBody Usuario usuario) {
+        usuario.setId(id);
+        Usuario updatedUsuario = usuarioService.actualizarUsuario(usuario);
         return ResponseEntity.ok(updatedUsuario);
     }
     
     // Endpoint para eliminar un usuario por ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUsuario(@PathVariable(value = "id") Long usuarioId) {
-        usuarioService.eliminarUsuario(usuarioId);
+    public ResponseEntity<Void> deleteUsuario(@PathVariable int id) {
+        usuarioService.eliminarUsuario(id);
         return ResponseEntity.ok().build();
     }
-    
 }
