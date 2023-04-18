@@ -18,7 +18,7 @@ public class CanchaController {
         this.canchaService = canchaService;
     }
 
-    @GetMapping
+    @GetMapping("/listar")
     private ResponseEntity<?> listAll(){
         List<Cancha> cancha = canchaService.listAll();
         return ResponseEntity.ok(cancha);
@@ -28,7 +28,7 @@ public class CanchaController {
         Cancha cancha = canchaService.listById(id);
         return ResponseEntity.ok(cancha);
     }
-    @PostMapping
+    @PostMapping("/crear")
     public ResponseEntity<Cancha> crearCancha(@RequestBody Cancha cancha) {
         Cancha nuevaCancha = canchaService.guardarCancha(cancha);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaCancha);
@@ -36,11 +36,12 @@ public class CanchaController {
     @PutMapping("/{id}")
     public ResponseEntity<Cancha> actualizarCancha(@PathVariable int id, @RequestBody Cancha cancha) {
         Cancha canchaExistente = canchaService.listById(id);
+        canchaExistente.setId(id);
         canchaExistente.setNombre(cancha.getNombre());
         canchaExistente.setUbicacion(cancha.getUbicacion());
         canchaExistente.setDescripcion(cancha.getDescripcion());
         canchaExistente.setPrecioHora(cancha.getPrecioHora());
-        Cancha canchaActualizada = canchaService.actualizarCancha(id, canchaExistente);
+        Cancha canchaActualizada = canchaService.actualizarCancha( canchaExistente);
         return ResponseEntity.ok(canchaActualizada);
     }
     @DeleteMapping("/{id}")

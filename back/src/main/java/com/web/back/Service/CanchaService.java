@@ -14,6 +14,6 @@ public interface CanchaService {
 
     void eliminarCancha(int id);
 
-    Cancha actualizarCancha(long canchaID, Cancha cancha);
+    Cancha actualizarCancha(Cancha cancha);
 
 }

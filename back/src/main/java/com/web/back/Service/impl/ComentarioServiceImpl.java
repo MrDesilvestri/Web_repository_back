@@ -8,7 +8,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 @Service
 public class ComentarioServiceImpl implements ComentarioService {
+    private final ComentarioRepository comentarioRepository;
 
+    public ComentarioServiceImpl(ComentarioRepository comentarioRepository) {
+        this.comentarioRepository = comentarioRepository;
+    }
     @Override
     public List<Comentario> listAll() {
         return comentarioRepository.findAll();
