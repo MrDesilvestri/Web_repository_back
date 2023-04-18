@@ -18,7 +18,7 @@ public class CanchaController {
         this.canchaService = canchaService;
     }
 
-    @GetMapping("/listar")
+    @GetMapping("/all")
     private ResponseEntity<?> listAll(){
         List<Cancha> cancha = canchaService.listAll();
         return ResponseEntity.ok(cancha);
@@ -45,8 +45,8 @@ public class CanchaController {
         return ResponseEntity.ok(canchaActualizada);
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarCancha(@PathVariable("id") int id) {
+    public ResponseEntity<String> eliminarCancha(@PathVariable int id) {
         canchaService.eliminarCancha(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Objeto eliminado correctamente");
     }
 }

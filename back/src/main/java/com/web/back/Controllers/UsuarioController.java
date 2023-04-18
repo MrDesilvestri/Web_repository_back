@@ -29,7 +29,7 @@ public class UsuarioController {
     }
 
     // Endpoint para obtener todos los usuarios
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<?> getAllUsuarios() {
         List<Usuario> usuarios = usuarioService.listAll();
         return ResponseEntity.status(HttpStatus.OK).body(usuarios);
@@ -44,14 +44,14 @@ public class UsuarioController {
     
     // Endpoint para crear un usuario
     @PostMapping("/crear_usuario")
-    public ResponseEntity<Usuario> createUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<?> createUsuario(@RequestBody Usuario usuario) {
         Usuario UsuarioCreate = usuarioService.guardarUsuario(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioCreate);
     }
     
     // Endpoint para actualizar un usuario por ID
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> updateUsuario(@PathVariable int id, @RequestBody Usuario usuario) {
+    public ResponseEntity<?> updateUsuario(@PathVariable int id, @RequestBody Usuario usuario) {
         usuario.setId(id);
         Usuario updatedUsuario = usuarioService.actualizarUsuario(usuario);
         return ResponseEntity.ok(updatedUsuario);
@@ -59,7 +59,7 @@ public class UsuarioController {
     
     // Endpoint para eliminar un usuario por ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUsuario(@PathVariable int id) {
+    public ResponseEntity<?> deleteUsuario(@PathVariable int id) {
         usuarioService.eliminarUsuario(id);
         return ResponseEntity.ok().build();
     }

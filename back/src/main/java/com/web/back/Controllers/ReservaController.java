@@ -2,9 +2,12 @@ package com.web.back.Controllers;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.web.back.DTO.ReservaDTO;
+import com.web.back.Entities.Cancha;
+import com.web.back.Entities.Usuario;
+import com.web.back.Service.CanchaService;
+import com.web.back.Service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,15 +27,23 @@ import com.web.back.Service.ReservaService;
 public class ReservaController {
     
     private final ReservaService reservaService;
+    private final UsuarioService usuarioService;
+    private final CanchaService canchaService;
 
-    public ReservaController(ReservaService reservaService) {
+    public ReservaController(ReservaService reservaService, UsuarioService usuarioService, CanchaService canchaService) {
         this.reservaService = reservaService;
+        this.usuarioService = usuarioService;
+        this.canchaService = canchaService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<?> obtenerTodasLasReservas() {
         List<Reserva> reservas = reservaService.listAll();
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(reservas);
+        if (reservas.size()>0){
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(reservas);
+        }else{
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("No hay reservas en la base de datos");
+        }
     }
     
     @GetMapping("/{id}")
@@ -45,14 +56,17 @@ public class ReservaController {
         }
     }
     
-    @PostMapping
-    public ResponseEntity<Reserva> crearReserva(@RequestBody Reserva reserva) {
-        Reserva nuevaReserva = reservaService.guardarReserva(reserva);
-        return ResponseEntity.created(URI.create("/reservas/" + nuevaReserva.getId())).body(nuevaReserva);
+    @PostMapping("/crear_reserva")
+    public ResponseEntity<?> crearReserva(@RequestBody ReservaDTO reserva) {
+        Usuario usuario = usuarioService.listById(reserva.getUsuarioId());
+        Cancha cancha = canchaService.listById(reserva.getCanchaId());
+        Reserva nuevaReserva = new Reserva(usuario, cancha, reserva.getFechaInicio(), reserva.getFechaFin());
+        reservaService.guardarReserva(nuevaReserva);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Nueva reserva creada : "+nuevaReserva);
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<Reserva> actualizarReserva(@PathVariable int id, @RequestBody Reserva reserva) {
+    public ResponseEntity<?> actualizarReserva(@PathVariable int id, @RequestBody Reserva reserva) {
         Reserva reservaExistente = reservaService.listById(id);
         if (reservaExistente != null) {
             reservaExistente.setFechaInicio(reserva.getFechaInicio());
@@ -67,7 +81,7 @@ public class ReservaController {
     }
     
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarReserva(@PathVariable int id) {
+    public ResponseEntity<?> eliminarReserva(@PathVariable int id) {
         Reserva reservaExistente = reservaService.listById(id);
         if (reservaExistente != null) {
             reservaService.eliminarReserva(id);

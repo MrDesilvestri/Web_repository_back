@@ -15,7 +15,6 @@ public class CanchaServiceImpl implements CanchaService {
         this.canchaRepository = canchaRepository;
     }
 
-
     @Override
     public List<Cancha> listAll() {
         return canchaRepository.findAll();
@@ -36,9 +35,5 @@ public class CanchaServiceImpl implements CanchaService {
     }
 
     @Override
-    public void eliminarCancha(int id) {
-        canchaRepository.deleteById(id);
-    }
-
-
+    public void eliminarCancha(int id) {canchaRepository.deleteById(id);}
 }
