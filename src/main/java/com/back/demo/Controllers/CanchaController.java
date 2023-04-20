@@ -13,14 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RestController
 @RequestMapping("/cancha")
 public class CanchaController {
-    static CanchaRepo canchaRepo;
 
     @Autowired
-    public CanchaController(CanchaRepo canchaRepo) {
-        this.canchaRepo = canchaRepo;
-    }
+    private static CanchaRepo canchaRepo;
 
     @GetMapping( "/listar")
     public ResponseEntity<?> getUsuarios(){

@@ -16,11 +16,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/reserva")
 public class ReservaController {
-    ReservaRepo reservaRepo;
     @Autowired
-    public ReservaController(ReservaRepo reservaRepo) {
-        this.reservaRepo = reservaRepo;
-    }
+    private ReservaRepo reservaRepo;
+
     @CrossOrigin
     @GetMapping( "/listar")
     public ResponseEntity<?> getReservas(){
@@ -38,6 +36,7 @@ public class ReservaController {
         reservaRepo.save(reserva);
         if (reserva == null)
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se pudo crear la reserva");
+
         else
             return ResponseEntity.status(HttpStatus.CREATED).body(reserva);
     }

@@ -5,16 +5,19 @@ import com.back.demo.Model.Cancha;
 import com.back.demo.Model.Usuario;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class WebApplicationTests {
 	@Test
+	@Autowired
 	void Test1() throws Exception {
 		Usuario testuser = new Usuario(777, "Pepito", "pepito@gmail.com", "1234", "123456789");
 		UsuarioController.insertar(testuser);
 	}
 	@Test
+	@Autowired
 	void Test2() throws Exception {
 		Cancha testcancha = new Cancha(123, "CampNou", "Bueno, Bonito y Barato", "Barcelona", 1500);
 		CanchaController.insertar(testcancha);
