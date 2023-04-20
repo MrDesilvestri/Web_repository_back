@@ -20,7 +20,7 @@ public class Comentario {
 
     private String comentario;
 
-    public Comentario() {
+    public Comentario(Comentario comentario) {
     }
 
     public int getId() {

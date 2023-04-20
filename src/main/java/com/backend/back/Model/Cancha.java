@@ -24,7 +24,7 @@ public class Cancha {
     @OneToMany(mappedBy = "cancha", cascade = CascadeType.ALL)
     private List<Comentario> comentarios;
 
-    public Cancha() {
+    public Cancha(Cancha cancha) {
     }
 
     public int getId() {

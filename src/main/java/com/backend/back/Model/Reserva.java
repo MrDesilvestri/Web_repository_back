@@ -20,7 +20,7 @@ public class Reserva {
 
     private LocalDateTime fechaInicio;
     private LocalDateTime fechaFin;
-    public Reserva() {
+    public Reserva(Reserva reserva) {
     }
     public int getId() {
         return id;
