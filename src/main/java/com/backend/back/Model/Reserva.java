@@ -1,57 +1,36 @@
-package com.backend.back.Model;
+package com.web.back.Entities;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "reserva")
 public class Reserva {
-
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "usuario_id")
     private Usuario usuario;
-
     @ManyToOne
-    @JoinColumn(name = "cancha_id", nullable = false)
+    @JoinColumn(name = "cancha_id")
     private Cancha cancha;
-
+    @Column(name = "fecha_inicio")
     private LocalDateTime fechaInicio;
+    @Column(name = "fecha_fin")
     private LocalDateTime fechaFin;
-    public Reserva() {
-    }
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
-    public Usuario getUsuario() {
-        return usuario;
-    }
-    public void setUsuario(Usuario usuario) {
+
+    public Reserva(Usuario usuario, Cancha cancha, LocalDateTime fechaInicio, LocalDateTime fechaFin) {
         this.usuario = usuario;
-    }
-    public Cancha getCancha() {
-        return cancha;
-    }
-    public void setCancha(Cancha cancha) {
         this.cancha = cancha;
-    }
-    public LocalDateTime getFechaInicio() {
-        return fechaInicio;
-    }
-    public void setFechaInicio(LocalDateTime fechaInicio) {
         this.fechaInicio = fechaInicio;
-    }
-    public LocalDateTime getFechaFin() {
-        return fechaFin;
-    }
-    public void setFechaFin(LocalDateTime fechaFin) {
         this.fechaFin = fechaFin;
     }
-
-    
 }
