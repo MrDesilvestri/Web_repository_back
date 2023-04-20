@@ -1,43 +1,48 @@
-package com.backend.back.Controllers;
+package com.back.demo.Controllers;
 
-import com.backend.back.CRUD.CanchaRepo;
-import com.backend.back.Model.Cancha;
+
+import com.back.demo.CRUD.CanchaRepo;
+import com.back.demo.Model.Cancha;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequestMapping("/cancha")
 public class CanchaController {
+    static CanchaRepo canchaRepo;
+
     @Autowired
-    CanchaRepo canchaRepo;
+    public CanchaController(CanchaRepo canchaRepo) {
+        this.canchaRepo = canchaRepo;
+    }
 
     @GetMapping( "/listar")
-    public ResponseEntity<List<Cancha>> getUsuarios(){
-        List<Cancha> canchas = canchaRepo.findAll();
+    public ResponseEntity<?> getUsuarios(){
+        List<Cancha> canchas = new ArrayList<>();
+        canchaRepo.findAll().forEach(canchas::add);
         return ResponseEntity.ok(canchas);
     }
 
-    @PostMapping("/")
-    public ResponseEntity<Cancha> insertar(@RequestBody Cancha cancha) throws Exception{
-        Cancha cancha1 = new Cancha(cancha);
-        canchaRepo.save(cancha1);
-        return ResponseEntity.ok(cancha1);
+    @PostMapping("/crear_cancha")
+    public static ResponseEntity<?> insertar(@RequestBody Cancha cancha){
+        canchaRepo.save(cancha);
+        return ResponseEntity.status(HttpStatus.CREATED).body(cancha);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Cancha> updateUsuario(@RequestBody Cancha cancha) {
-
-        Cancha updatedCancha = new Cancha(cancha);
-        return ResponseEntity.ok(updatedCancha);
+    public ResponseEntity<?> updateUsuario(@RequestBody Cancha cancha) {
+        canchaRepo.save(cancha);
+        return ResponseEntity.status(HttpStatus.CREATED).body(cancha);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Cancha> getUsuario(@PathVariable("id") int id) throws Exception{
+    public ResponseEntity<?> getUsuario(@PathVariable("id") int id) throws Exception{
         Cancha cancha = canchaRepo.findById(id).get();
         return ResponseEntity.ok(cancha);
     }
-
 }

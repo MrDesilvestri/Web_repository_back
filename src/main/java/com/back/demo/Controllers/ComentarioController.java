@@ -1,38 +1,47 @@
-package com.backend.back.Controllers;
+package com.back.demo.Controllers;
 
-import com.backend.back.CRUD.ComentarioRepo;
-import com.backend.back.Model.Comentario;
-import com.backend.back.Model.Reserva;
+import com.back.demo.CRUD.ComentarioRepo;
+import com.back.demo.Model.Comentario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequestMapping("/comentario")
 public class ComentarioController {
-    @Autowired
+
     ComentarioRepo comentarioRepo;
-    @GetMapping( "/listar")
-    public ResponseEntity<List<Comentario>> getUsuarios(){
-        List<Comentario> comentarios = comentarioRepo.findAll();
-        return ResponseEntity.ok(comentarios);
+    @Autowired
+    public ComentarioController(ComentarioRepo comentarioRepo) {
+        this.comentarioRepo = comentarioRepo;
     }
 
-    @PostMapping("/")
-    public ResponseEntity<Comentario> insertar(@RequestBody Comentario comentario) throws Exception{
-        Comentario comentario1 = new Comentario(comentario);
-        comentarioRepo.save(comentario1);
-        return ResponseEntity.ok(comentario1);
+    @CrossOrigin
+    @GetMapping( "/listar")
+    public ResponseEntity<List<Comentario>> getUsuarios(){
+        List<Comentario> comentarios = new ArrayList<>();
+        comentarioRepo.findAll().forEach(comentarios::add);
+        return ResponseEntity.ok(comentarios);
+    }
+    @CrossOrigin
+    @PostMapping("/crear_comentario")
+    public ResponseEntity<?> insertar(@RequestBody Comentario comentario) throws Exception{
+        if(comentario == null){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body("No se puede crear un comentario vacio");
+        }else{
+            comentarioRepo.save(comentario);
+            return ResponseEntity.status(HttpStatus.CREATED).body(comentario);
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Comentario> updateUsuario(@RequestBody Comentario comentario) {
-
-        Comentario updatedComentario = new Comentario(comentario);
-        return ResponseEntity.ok(updatedComentario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(comentario);
     }
     @GetMapping("/{id}")
     public ResponseEntity<Comentario> getUsuario(@PathVariable("id") int id) throws Exception{

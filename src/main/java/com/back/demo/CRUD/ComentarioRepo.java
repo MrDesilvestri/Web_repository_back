@@ -1,7 +1,7 @@
-package com.backend.back.CRUD;
+package com.back.demo.CRUD;
 
-import com.backend.back.Model.Comentario;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.back.demo.Model.Comentario;
+import org.springframework.data.repository.CrudRepository;
 
-public interface ComentarioRepo extends JpaRepository <Comentario, Integer> {
+public interface ComentarioRepo extends CrudRepository<Comentario, Integer> {
 }

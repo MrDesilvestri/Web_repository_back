@@ -1,8 +1,13 @@
-package com.backend.back.Model;
+package com.back.demo.Model;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "reserva")
 public class Reserva {
 
@@ -20,38 +25,4 @@ public class Reserva {
 
     private LocalDateTime fechaInicio;
     private LocalDateTime fechaFin;
-    public Reserva(Reserva reserva) {
-    }
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
-    }
-    public Usuario getUsuario() {
-        return usuario;
-    }
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-    public Cancha getCancha() {
-        return cancha;
-    }
-    public void setCancha(Cancha cancha) {
-        this.cancha = cancha;
-    }
-    public LocalDateTime getFechaInicio() {
-        return fechaInicio;
-    }
-    public void setFechaInicio(LocalDateTime fechaInicio) {
-        this.fechaInicio = fechaInicio;
-    }
-    public LocalDateTime getFechaFin() {
-        return fechaFin;
-    }
-    public void setFechaFin(LocalDateTime fechaFin) {
-        this.fechaFin = fechaFin;
-    }
-
-    
 }

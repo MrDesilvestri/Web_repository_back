@@ -1,11 +1,15 @@
-package com.backend.back.Model;
+package com.back.demo.Model;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "cancha")
 public class Cancha {
 
@@ -24,64 +28,12 @@ public class Cancha {
     @OneToMany(mappedBy = "cancha", cascade = CascadeType.ALL)
     private List<Comentario> comentarios;
 
-    public Cancha(Cancha cancha) {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
+    public Cancha(int i, String nombre, String descripcion, String ubicacion, int precioHora) {
+        this.id = i;
         this.nombre = nombre;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
-    }
-
-    public String getUbicacion() {
-        return ubicacion;
-    }
-
-    public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
+        this.precioHora = new BigDecimal(precioHora);
     }
 
-    public BigDecimal getPrecioHora() {
-        return precioHora;
-    }
-
-    public void setPrecioHora(BigDecimal precioHora) {
-        this.precioHora = precioHora;
-    }
-
-    public List<Reserva> getReservas() {
-        return reservas;
-    }
-
-    public void setReservas(List<Reserva> reservas) {
-        this.reservas = reservas;
-    }
-
-    public List<Comentario> getComentarios() {
-        return comentarios;
-    }
-
-    public void setComentarios(List<Comentario> comentarios) {
-        this.comentarios = comentarios;
-    }
-
-    
 }

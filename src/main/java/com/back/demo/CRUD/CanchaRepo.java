@@ -1,7 +1,7 @@
-package com.backend.back.CRUD;
+package com.back.demo.CRUD;
 
-import com.backend.back.Model.Cancha;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.back.demo.Model.Cancha;
+import org.springframework.data.repository.CrudRepository;
 
-public interface CanchaRepo extends JpaRepository <Cancha, Integer> {
+public interface CanchaRepo extends CrudRepository<Cancha, Integer> {
 }

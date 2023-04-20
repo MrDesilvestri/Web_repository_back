@@ -1,7 +1,7 @@
-package com.backend.back.CRUD;
+package com.back.demo.CRUD;
 
-import com.backend.back.Model.Usuario;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.back.demo.Model.Usuario;
+import org.springframework.data.repository.CrudRepository;
 
-public interface UsuarioRepo extends JpaRepository <Usuario, Integer> {
+public interface UsuarioRepo extends CrudRepository<Usuario, Integer> {
 }

@@ -1,8 +1,12 @@
-package com.backend.back.Model;
+package com.back.demo.Model;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Data
+@NoArgsConstructor
 @Table(name = "comentario")
 public class Comentario {
 
@@ -19,41 +23,4 @@ public class Comentario {
     private Cancha cancha;
 
     private String comentario;
-
-    public Comentario(Comentario comentario) {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public Cancha getCancha() {
-        return cancha;
-    }
-
-    public void setCancha(Cancha cancha) {
-        this.cancha = cancha;
-    }
-
-    public String getComentario() {
-        return comentario;
-    }
-
-    public void setComentario(String comentario) {
-        this.comentario = comentario;
-    }
-
-    
 }

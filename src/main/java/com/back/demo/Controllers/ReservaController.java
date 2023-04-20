@@ -1,42 +1,55 @@
-package com.backend.back.Controllers;
+package com.back.demo.Controllers;
 
-import com.backend.back.CRUD.ReservaRepo;
-import com.backend.back.Model.Reserva;
-import com.backend.back.Model.Usuario;
+
+import com.back.demo.CRUD.ReservaRepo;
+import com.back.demo.Model.Reserva;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@RestController
 @RequestMapping("/reserva")
 public class ReservaController {
-    @Autowired
     ReservaRepo reservaRepo;
-
+    @Autowired
+    public ReservaController(ReservaRepo reservaRepo) {
+        this.reservaRepo = reservaRepo;
+    }
+    @CrossOrigin
     @GetMapping( "/listar")
-    public ResponseEntity<List<Reserva>> getUsuarios(){
-        List<Reserva> reservas = reservaRepo.findAll();
-        return ResponseEntity.ok(reservas);
+    public ResponseEntity<?> getReservas(){
+       List<Reserva> reservas = new ArrayList<>();
+         reservaRepo.findAll().forEach(reservas::add);
+         if (reservas.isEmpty())
+             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay reservas");
+         else
+             return ResponseEntity.status(HttpStatus.OK).body(reservas);
     }
 
-    @PostMapping("/")
-    public ResponseEntity<Reserva> insertar(@RequestBody Reserva reserva) throws Exception{
-        Reserva reserva1 = new Reserva(reserva);
-        reservaRepo.save(reserva1);
-        return ResponseEntity.ok(reserva1);
+    @CrossOrigin
+    @PostMapping("/crear_reserva")
+    public ResponseEntity<?> insertar(@RequestBody Reserva reserva) throws Exception{
+        reservaRepo.save(reserva);
+        if (reserva == null)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se pudo crear la reserva");
+        else
+            return ResponseEntity.status(HttpStatus.CREATED).body(reserva);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Reserva> updateUsuario(@RequestBody Reserva reserva) {
+    public ResponseEntity<?> updateUsuario(@RequestBody Reserva reserva) {
 
         Reserva updatedReserva = reservaRepo.save(reserva);
         return ResponseEntity.ok(updatedReserva);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<Reserva> getUsuario(@PathVariable("id") int id) throws Exception{
+    public ResponseEntity<?> getUsuario(@PathVariable("id") int id){
         Reserva reserva = reservaRepo.findById(id).get();
         return ResponseEntity.ok(reserva);
     }
