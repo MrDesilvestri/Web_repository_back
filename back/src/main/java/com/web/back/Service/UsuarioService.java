@@ -1,17 +1,17 @@
 package com.web.back.Service;
 
 import java.util.List;
-import java.util.Optional;
-import com.web.back.Entities.Usuario;
+
+import com.web.back.Entities.User;
 
 public interface UsuarioService {
 
-    List<Usuario> listAll();
+    List<User> listAll();
 
-    Usuario listById(int id);
-    Usuario guardarUsuario(Usuario usuario);
+    User listById(int id);
+    User guardarUsuario(User usuario);
 
-    Usuario actualizarUsuario(Usuario usuario);
+    User actualizarUsuario(User usuario);
     
     void eliminarUsuario(int id);
 }

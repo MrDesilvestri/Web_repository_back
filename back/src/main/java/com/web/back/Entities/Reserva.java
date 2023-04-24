@@ -15,7 +15,7 @@ public class Reserva {
     private int id;
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
+    private User usuario;
     @ManyToOne
     @JoinColumn(name = "cancha_id", nullable = false)
     private Cancha cancha;

@@ -1,6 +1,6 @@
 package com.web.back.Service.impl;
 
-import com.web.back.Entities.Usuario;
+import com.web.back.Entities.User;
 import com.web.back.Service.UsuarioService;
 import com.web.back.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
@@ -17,22 +17,22 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public List<Usuario> listAll() {
+    public List<User> listAll() {
         return usuarioRepository.findAll();
     }
 
     @Override
-    public Usuario listById(int id) {
+    public User listById(int id) {
         return usuarioRepository.findById(id).get();
     }
 
     @Override
-    public Usuario guardarUsuario(Usuario usuario) {
+    public User guardarUsuario(User usuario) {
         return usuarioRepository.save(usuario);
     }
 
     @Override
-    public Usuario actualizarUsuario(Usuario usuario) {
+    public User actualizarUsuario(User usuario) {
         return usuarioRepository.save(usuario);
     }
 

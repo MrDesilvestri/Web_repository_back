@@ -2,21 +2,33 @@ package com.web.back.Entities;
 import java.util.List;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+
 
 @Entity
-@Data
+@Setter
+@ToString
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "usuario")
-public class Usuario {
+public class User {
 
     @Id
+    @NotNull
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @NotBlank
+    @Size(min = 3, max = 20)
     @Column(name = "nombre")
     private String nombre;
+    @NotBlank
+    @Size(min = 3, max = 20)
     @Column(name = "email")
     private String email;
     @Column(name = "password")
