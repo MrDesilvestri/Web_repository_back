@@ -22,12 +22,7 @@ public class Cancha {
     private String descripcion;
     @Column(name = "ubicacion")
     private String ubicacion;
+
     @Column(name = "precio_hora")
     private BigDecimal precioHora;
-
-    @OneToMany(mappedBy = "cancha", cascade = CascadeType.ALL)
-    private List<Reserva> reservas;
-
-    @OneToMany(mappedBy = "cancha", cascade = CascadeType.ALL)
-    private List<Comentario> comentarios;
 }
