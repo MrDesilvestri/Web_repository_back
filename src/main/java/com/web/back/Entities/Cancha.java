@@ -24,7 +24,7 @@ public class Cancha {
     private long id;
 
     @NotNull(message = "name is mandatory")
-    @Size(min = 5, max = 15)
+    @Size(min = 5, max = 30)
     @Column(name = "nombre")
     private String nombre;
 
