@@ -14,10 +14,10 @@ public class Comentario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne
-    @JoinColumn(name = "usuario_id", nullable = false)
+    @JoinColumn(name = "usuario_id")
     private User usuario;
     @ManyToOne
-    @JoinColumn(name = "cancha_id", nullable = false)
+    @JoinColumn(name = "cancha_id")
     private Cancha cancha;
     @Column(name = "comentario")
     private String comentario;

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.back.Entities.User;
-import com.web.back.Service.UsuarioService;
 
 @RestController
 @RequestMapping("/usuarios")
