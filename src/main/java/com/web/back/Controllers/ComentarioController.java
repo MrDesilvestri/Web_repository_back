@@ -17,15 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.web.back.Entities.Comentario;
-import com.web.back.Exceptions.ComentarioNotFoundException;
-import com.web.back.Service.ComentarioService;
 
 @RestController
 @RequestMapping("/comentario")
 public class ComentarioController {
 
-    private final ComentarioService comentarioService;
+    /*private final ComentarioService comentarioService;
 
     public ComentarioController(ComentarioService comentarioService) {
         this.comentarioService = comentarioService;
@@ -56,5 +53,5 @@ public class ComentarioController {
         Map<String, Boolean> response = new HashMap<>();
         response.put("deleted", Boolean.TRUE);
         return response;
-    }
+    }*/
 }

@@ -19,7 +19,7 @@ import com.web.back.Entities.User;
 @RequestMapping("/usuarios")
 public class UsuarioController {
     
-    private final UsuarioService usuarioService;
+    /*rivate final UsuarioService usuarioService;
 
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
@@ -59,5 +59,5 @@ public class UsuarioController {
     public ResponseEntity<Void> deleteUsuario(@PathVariable int id) {
         usuarioService.eliminarUsuario(id);
         return ResponseEntity.ok().build();
-    }
+    }*/
 }

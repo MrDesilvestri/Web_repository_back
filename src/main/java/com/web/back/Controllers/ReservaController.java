@@ -16,14 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.web.back.Entities.Reserva;
-import com.web.back.Service.ReservaService;
 
 @RestController
 @RequestMapping("/reserva")
 public class ReservaController {
     
-    private final ReservaService reservaService;
+    /*private final ReservaService reservaService;
 
     public ReservaController(ReservaService reservaService) {
         this.reservaService = reservaService;
@@ -59,7 +57,6 @@ public class ReservaController {
             reservaExistente.setFechaFin(reserva.getFechaFin());
             reservaExistente.setCancha(reserva.getCancha());
             reservaExistente.setUsuario(reserva.getUsuario());
-            reservaService.guardarReserva(reservaExistente);
             return ResponseEntity.ok(reservaExistente);
         } else {
             return ResponseEntity.notFound().build();
@@ -75,5 +72,5 @@ public class ReservaController {
         } else {
             return ResponseEntity.notFound().build();
         }
-    }
+    }*/
 }
