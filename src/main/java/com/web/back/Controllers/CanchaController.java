@@ -43,6 +43,7 @@ public class CanchaController {
         return ResponseEntity.status(HttpStatus.OK).body(canchas);
     }
 
+    @CrossOrigin
     @Operation(summary = "Get the field by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Returns the field with the id given",content = { @Content(mediaType = "application/json",schema = @Schema(implementation = Cancha.class)) }),
