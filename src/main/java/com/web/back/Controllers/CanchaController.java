@@ -32,8 +32,8 @@ public class CanchaController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Cancha.class)) }),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)})
     @GetMapping("/list")
-    private ResponseEntity<?> listAll(
-            @RequestParam(value = "id", required = false, defaultValue = "id") long id,
+    public ResponseEntity<?> listAll(
+            @RequestParam(value = "id", required = false, defaultValue = "id") Long id,
             @RequestParam(value = "nombre", required = false, defaultValue = "nombre") String nombre,
             @RequestParam(value = "descripcion", required = false, defaultValue = "descripcion") String descripcion,
             @RequestParam(value = "ubicacion", required = false, defaultValue = "ubicacion") String ubicacion,

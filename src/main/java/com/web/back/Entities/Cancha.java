@@ -42,4 +42,13 @@ public class Cancha {
     @Digits(integer = 5, fraction = 2)
     @Column(name = "precio_hora")
     private BigDecimal precioHora;
+
+    public Cancha(long id, String nombre, String descripcion, String ubicacion, double preciohora) {
+        this.id = id;
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.ubicacion = ubicacion;
+        this.precioHora = BigDecimal.valueOf(preciohora);
+
+    }
 }
