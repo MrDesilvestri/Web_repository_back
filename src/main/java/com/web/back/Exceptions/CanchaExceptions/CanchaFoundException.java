@@ -1,4 +1,4 @@
-package com.web.back.Exceptions;
+package com.web.back.Exceptions.CanchaExceptions;
 
 
 public class CanchaFoundException extends RuntimeException{

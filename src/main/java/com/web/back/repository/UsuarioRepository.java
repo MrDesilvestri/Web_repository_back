@@ -1,8 +1,8 @@
 package com.web.back.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
 import com.web.back.Entities.User;
 
-public interface UsuarioRepository extends JpaRepository<User, Integer> {
+public interface UsuarioRepository extends CrudRepository<User, Long> {
 }

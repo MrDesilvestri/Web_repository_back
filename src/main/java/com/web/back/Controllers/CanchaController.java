@@ -1,8 +1,8 @@
 package com.web.back.Controllers;
 
 import com.web.back.Entities.Cancha;
-import com.web.back.Exceptions.CanchaFoundException;
-import com.web.back.Exceptions.CanchaNotFoundException;
+import com.web.back.Exceptions.CanchaExceptions.CanchaFoundException;
+import com.web.back.Exceptions.CanchaExceptions.CanchaNotFoundException;
 import com.web.back.repository.CanchaRepository;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,12 +28,13 @@ public class CanchaController {
 
     @Operation(summary = "Get the field catalog")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Returns a list of fields ordered and filtered based on query parameters", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = Cancha.class)) }),
+            @ApiResponse(responseCode = "200", description = "Returns a list of fields ordered and filtered based on query parameters",
+             content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Cancha.class)) }),
             @ApiResponse(responseCode = "400", description = "Bad request", content = @Content)})
+    @CrossOrigin
     @GetMapping("/list")
     public ResponseEntity<?> listAll(
-            @RequestParam(value = "id", required = false, defaultValue = "id") Long id,
+            @RequestParam(value = "id", required = false, defaultValue = "id") String id,
             @RequestParam(value = "nombre", required = false, defaultValue = "nombre") String nombre,
             @RequestParam(value = "descripcion", required = false, defaultValue = "descripcion") String descripcion,
             @RequestParam(value = "ubicacion", required = false, defaultValue = "ubicacion") String ubicacion,
@@ -55,6 +56,7 @@ public class CanchaController {
         return ResponseEntity.status(HttpStatus.OK).body(cancha);
     }
 
+    @CrossOrigin
     @Operation(summary = "Add a new field in to the catalog")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "field saved", content = { @Content(mediaType = "application/json",schema = @Schema(implementation = Cancha.class)) }),
@@ -70,20 +72,35 @@ public class CanchaController {
             return ResponseEntity.status(HttpStatus.CREATED).body(cancha);
         }
     }
-    /*@PutMapping("/{id}")
-    public ResponseEntity<Cancha> actualizarCancha(@PathVariable int id, @RequestBody Cancha cancha) {
-        Cancha canchaExistente = canchaService.listById(id);
-        canchaExistente.setId(id);
+
+    @CrossOrigin
+    @Operation(summary = "Update a field in the catalog")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "field updated", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Cancha.class)) }),
+        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CanchaNotFoundException.class))),
+        @ApiResponse(responseCode = "404", description = "field with given id does not exist", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CanchaNotFoundException.class))) })
+    @PutMapping("/update/={id}")
+    public ResponseEntity<?> actualizarCancha(@RequestBody @Valid Cancha cancha , @PathVariable("id") long id) {
+        Cancha canchaExistente = canchaRepository.findById(id).orElseThrow(() -> new CanchaNotFoundException(id));
+        
         canchaExistente.setNombre(cancha.getNombre());
         canchaExistente.setUbicacion(cancha.getUbicacion());
         canchaExistente.setDescripcion(cancha.getDescripcion());
         canchaExistente.setPrecioHora(cancha.getPrecioHora());
-        Cancha canchaActualizada = canchaService.actualizarCancha( canchaExistente);
-        return ResponseEntity.ok(canchaActualizada);
+        canchaRepository.save(canchaExistente);
+        return ResponseEntity.status(HttpStatus.OK).body(canchaExistente);
     }
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminarCancha(@PathVariable("id") int id) {
-        canchaService.eliminarCancha(id);
-        return ResponseEntity.noContent().build();
-    }*/
+
+    @CrossOrigin
+    @Operation(summary = "Delete a field in the catalog by its id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "field deleted", content = @Content),
+        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CanchaNotFoundException.class))),
+        @ApiResponse(responseCode = "404", description = "Book is in use or does not exist", content = @Content(mediaType = "application/json", schema = @Schema(implementation = CanchaNotFoundException.class))) })
+    @DeleteMapping("/{id}/delete")
+    public ResponseEntity<?> eliminarCancha(@PathVariable("id") long id) {
+        Cancha cancha = canchaRepository.findById(id).orElseThrow(() -> new CanchaNotFoundException(id));
+        canchaRepository.delete(cancha);
+        return ResponseEntity.status(HttpStatus.OK).body("Cancha con el id " + id + " fue eliminada");
+    }
 }

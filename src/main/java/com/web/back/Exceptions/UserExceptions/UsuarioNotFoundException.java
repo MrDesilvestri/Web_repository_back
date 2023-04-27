@@ -1,4 +1,4 @@
-package com.web.back.Exceptions;
+package com.web.back.Exceptions.UserExceptions;
 
 public class UsuarioNotFoundException extends RuntimeException{
     public UsuarioNotFoundException(long message) {

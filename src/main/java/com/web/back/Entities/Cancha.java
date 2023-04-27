@@ -19,7 +19,6 @@ import java.math.BigDecimal;
 public class Cancha {
     @Id
     @Column(name = "id")
-
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
@@ -49,6 +48,5 @@ public class Cancha {
         this.descripcion = descripcion;
         this.ubicacion = ubicacion;
         this.precioHora = BigDecimal.valueOf(preciohora);
-
     }
 }

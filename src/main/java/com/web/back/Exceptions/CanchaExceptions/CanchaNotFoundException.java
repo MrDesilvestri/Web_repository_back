@@ -1,7 +1,7 @@
-package com.web.back.Exceptions;
+package com.web.back.Exceptions.CanchaExceptions;
 
 public class CanchaNotFoundException extends  RuntimeException{
-    public CanchaNotFoundException(String message) {
+    public CanchaNotFoundException(long message) {
         super("No se encontro la cancha con el ID : " + message);
     }
 }
