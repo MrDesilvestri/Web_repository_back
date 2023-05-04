@@ -37,8 +37,8 @@ public class User {
 
     @NotBlank
     @Column(name = "telefono")
-    @Size(min = 10, max = 15)
-    private Long telefono;
+    @Size(min = 10, max = 20)
+    private String telefono;
 
     @NotBlank
     @Size(min = 3, max = 20)
