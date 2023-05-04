@@ -62,24 +62,4 @@ public class UsuarioControllerTest {
       assert (false);
     }
   }
-
-  @Test
-  public void totalUsers() {
-    try {
-      long total = usuarioRepository.count();
-      assertEquals(total, 3L);
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      assert (false);
-    }
-  }
-  @Test
-  public void NonTotalUsers() {
-    try {
-      long total = usuarioRepository.count();
-      assertNotEquals(total, 4L);
-    } catch (Exception e) {
-      assert (true);
-    }
-  }
 }

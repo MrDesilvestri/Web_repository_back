@@ -67,7 +67,7 @@ public class CanchaControllerTest {
       cancha.setNombre("Cancha de prueba2");
       cancha.setDescripcion("Cancha de prueba2");
       cancha.setPrecioHora(BigDecimal.valueOf(1000));
-      cancha.setUbicacion("Calle falsa 1233");
+      cancha.setUbicacion("Calle falsa 1");
       canchaRepository.save(cancha);
       int cantidadDespues = 0;
       canchaIterator = canchaRepository.findAll().iterator();
