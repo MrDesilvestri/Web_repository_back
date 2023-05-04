@@ -12,8 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,23 +47,5 @@ public class webapplicationtestusuarios {
      assertEquals(usuarioGuardado, usuarioEncontrado);
     }
 
-    /*public void testUpdateUsuario() {
-      User usuario = new User();
-      usuario.setNombre("Juan Perez");
-      usuario.setEmail("juanpe@hotmail.com");
-      usuario.setTelefono(30012345679L);
-      usuario.setPassword("panchito123");
 
-      User usuarioGuardado = usuarioRepository.save(usuario);
-      long id = usuarioGuardado.getId();
-      User usuarioActualizado = new User();
-      usuarioActualizado.setNombre("Juan Perez Gomez");
-      usuarioActualizado.setEmail("juanpe@gmail.com");
-      usuarioActualizado.setTelefono(300123454349L);
-      usuarioActualizado.setPassword("1234345");
-
-      when(UsuarioController.updateUsuario(id, usuarioActualizado)).thenReturn(new ResponseEntity<>(HttpStatus.OK));
-      ResponseEntity<?> respuesta = usuarioController.updateUsuario(id, usuarioActualizado);
-      assertEquals(HttpStatus.OK, respuesta.getStatusCode());
-    }*/
 }
