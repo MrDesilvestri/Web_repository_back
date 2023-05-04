@@ -49,7 +49,4 @@ public class User {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Reserva> reservas;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private List<Comentario> comentarios;
 }

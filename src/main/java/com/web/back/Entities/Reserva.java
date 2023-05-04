@@ -1,21 +1,12 @@
 package com.web.back.Entities;
 
 
-import java.time.LocalDateTime;
-
-import com.back.demo.Model.Usuario;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -23,18 +14,14 @@ import lombok.NoArgsConstructor;
 @Table(name = "reserva")
 public class Reserva {
 
-    /*@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne
-a
     @NotNull(message = "User is mandatory")
-    @JoinColumn(name = "usuario_id")
-    private User usuario;
-
     @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuario;
+    private User usuario;
 
     @ManyToOne
     @NotNull(message = "cancha is mandatory")
@@ -48,7 +35,5 @@ a
 
     @NotNull(message = "fechaFin is mandatory")
     @Column(name = "fecha_fin")
-
-    private LocalDateTime fechaInicio;
-    private LocalDateTime fechaFin;*/
+    private LocalDateTime fechaFin;
 }

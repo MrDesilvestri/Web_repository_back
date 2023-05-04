@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,9 +34,9 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/users")
 public class UsuarioController {
-    
+
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private static UsuarioRepository usuarioRepository;
 
 
     // Endpoint para obtener todos los usuarios
@@ -51,7 +52,7 @@ public class UsuarioController {
         usuarioRepository.findAll().forEach(usuarios::add);
         return ResponseEntity.status(HttpStatus.OK).body(usuarios);
     }
-    
+
     // Endpoint para obtener un usuario por ID
     @Operation(summary = "Get an user by its id")
     @CrossOrigin
@@ -64,7 +65,7 @@ public class UsuarioController {
         User user = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException(id));
         return ResponseEntity.ok().body(user);
     }
-    
+
     // Endpoint para crear un usuario
     @CrossOrigin
     @Operation(summary = "Add a new User received as a parameter")
@@ -91,7 +92,7 @@ public class UsuarioController {
         @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))),
         @ApiResponse(responseCode = "404", description = "User not found",content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateUsuario(@PathVariable Long id, @RequestBody User usuario) {
+    public static ResponseEntity<?> updateUsuario(@PathVariable Long id, @RequestBody User usuario) {
         User user = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException(id));
         if(user != null){
             throw new UsuarioNotFoundException(id);
@@ -100,7 +101,7 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.OK).body(usuario);
         }
     }
-    
+
     // Endpoint para eliminar un usuario por ID
     @CrossOrigin
     @Operation(summary = "Delete a user by its id")
