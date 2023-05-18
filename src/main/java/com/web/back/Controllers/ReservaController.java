@@ -4,33 +4,49 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import com.web.back.Entities.Cancha;
+import com.web.back.Entities.Reserva;
+import com.web.back.Exceptions.ReservaExceptions.ReservaNotFoundException;
+import com.web.back.repository.CanchaRepository;
+import com.web.back.repository.ReservaRepository;
+import com.web.back.repository.UsuarioRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/reserva")
+@RequestMapping("/api/reservations")
 public class ReservaController {
-    
-    /*private final ReservaService reservaService;
 
-    public ReservaController(ReservaService reservaService) {
-        this.reservaService = reservaService;
-    }
+    @Autowired
+    private ReservaRepository reservaRepository;
+    @Autowired
+    private CanchaRepository canchaRepository;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-    @GetMapping
-    public ResponseEntity<?> obtenerTodasLasReservas() {
-        List<Reserva> reservas = reservaService.listAll();
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(reservas);
+
+
+    /*@Operation(summary = "Get the orders list filteded by email or field title with a sort order")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Orders listed", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Reserva.class)) }),
+            @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ReservaNotFoundException.class))) })
+    @CrossOrigin
+    @GetMapping("/list")
+    public ResponseEntity<?> getAll() {
+
+    ) {
+            List<Cancha> list = reservaRepository.getAllOrders(nickname, filter, limit);
+            return ResponseEntity.ok(list);
+        }
+
     }
     
     @GetMapping("/{id}")

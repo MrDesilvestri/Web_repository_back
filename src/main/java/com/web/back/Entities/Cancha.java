@@ -40,13 +40,19 @@ public class Cancha {
     @NotNull(message = "precio_hora is mandatory")
     @Digits(integer = 5, fraction = 2)
     @Column(name = "precio_hora")
-    private BigDecimal precioHora;
+    private String precioHora;
 
-    public Cancha(long id, String nombre, String descripcion, String ubicacion, double preciohora) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.ubicacion = ubicacion;
-        this.precioHora = BigDecimal.valueOf(preciohora);
-    }
+    @NotNull(message = "imagen_cancha is mandatory")
+    @Size(max = 100)
+    @Column(name = "imagen_cancha")
+    private String imagenCancha;
+
+    @NotNull(message = "tipo_cancha is mandatory")
+    @Size(max = 1)
+    @Column(name = "tipo_cancha")
+    private String tipoCancha;
+
+    @NotNull(message = "gradas is mandatory")
+    @Column(name = "gradas")
+    private Boolean gradas;
 }

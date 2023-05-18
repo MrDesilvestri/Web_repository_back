@@ -39,7 +39,10 @@ public class CanchaController {
             @RequestParam(value = "nombre", required = false, defaultValue = "nombre") String nombre,
             @RequestParam(value = "descripcion", required = false, defaultValue = "descripcion") String descripcion,
             @RequestParam(value = "ubicacion", required = false, defaultValue = "ubicacion") String ubicacion,
-            @RequestParam(value = "precioHora", required = false, defaultValue = "precioHora") String precioHora){
+            @RequestParam(value = "precioHora", required = false, defaultValue = "precioHora") String precioHora,
+            @RequestParam(value = "imagenCancha", required = false, defaultValue = "imagenCancha") String imagenCancha,
+            @RequestParam(value = "tipoCancha", required = false, defaultValue = "tipoCancha") String tipoCancha,
+            @RequestParam(value = "gradas", required = false, defaultValue = "false") boolean gradas){
         List<Cancha> canchas = new ArrayList<>();
         canchaRepository.findAll().forEach(canchas::add);
         return ResponseEntity.status(HttpStatus.OK).body(canchas);
@@ -83,11 +86,13 @@ public class CanchaController {
     @PutMapping("/update/={id}")
     public ResponseEntity<?> actualizarCancha(@RequestBody @Valid Cancha cancha , @PathVariable("id") long id) {
         Cancha canchaExistente = canchaRepository.findById(id).orElseThrow(() -> new CanchaNotFoundException(id));
-
         canchaExistente.setNombre(cancha.getNombre());
         canchaExistente.setUbicacion(cancha.getUbicacion());
         canchaExistente.setDescripcion(cancha.getDescripcion());
         canchaExistente.setPrecioHora(cancha.getPrecioHora());
+        canchaExistente.setImagenCancha(cancha.getImagenCancha());
+        canchaExistente.setTipoCancha(cancha.getTipoCancha());
+        canchaExistente.setGradas(cancha.getGradas());
         canchaRepository.save(canchaExistente);
         return ResponseEntity.status(HttpStatus.OK).body(canchaExistente);
     }
