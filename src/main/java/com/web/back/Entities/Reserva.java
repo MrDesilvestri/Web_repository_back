@@ -14,20 +14,9 @@ import java.time.LocalDateTime;
 @Table(name = "reserva")
 public class Reserva {
 
-    @Id
+    @EmbeddedId
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @ManyToOne
-    @NotNull(message = "User is mandatory")
-    @JoinColumn(name = "usuario_id", nullable = false)
-    private User usuario;
-
-    @ManyToOne
-    @NotNull(message = "cancha is mandatory")
-    @JoinColumn(name = "cancha_id")
-    private Cancha cancha;
-
+    private ReservaPK id;
 
     @NotNull(message = "fechaInicio is mandatory")
     @Column(name = "fecha_inicio")
@@ -36,4 +25,17 @@ public class Reserva {
     @NotNull(message = "fechaFin is mandatory")
     @Column(name = "fecha_fin")
     private LocalDateTime fechaFin;
+
+    @ManyToOne
+    @NotNull(message = "User is mandatory")
+    @JoinColumn(name = "usuario_id", insertable = false, updatable = false)
+    private User usuario;
+
+    @ManyToOne
+    @NotNull(message = "cancha is mandatory")
+    @JoinColumn(name = "cancha_id",insertable = false, updatable = false)
+    private Cancha cancha;
+
+
+
 }

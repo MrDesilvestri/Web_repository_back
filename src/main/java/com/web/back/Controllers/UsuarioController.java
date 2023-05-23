@@ -1,21 +1,20 @@
 package com.web.back.Controllers;
 
-import java.util.ArrayList;
-import java.util.List;
 
+
+import com.web.back.Entities.Role;
+import com.web.back.Exceptions.UserExceptions.UserPasswordException;
+import com.web.back.auth.AuthenticationService;
+import com.web.back.config.JwtService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.web.back.Entities.User;
@@ -32,15 +31,22 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api/v1/users")
+@CrossOrigin
+@RequiredArgsConstructor
 public class UsuarioController {
 
     @Autowired
-    private static UsuarioRepository usuarioRepository;
+    private AuthenticationService authenticationService;
 
+    private final PasswordEncoder passwordEncoder;
+
+    private final UsuarioRepository usuarioRepository;
+
+    private final JwtService jwtService;
 
     // Endpoint para obtener todos los usuarios
-    @CrossOrigin
+    /*@CrossOrigin
     @Operation(summary = "Gets the list of users")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Returns a list of users filtered by a parameter",
@@ -49,7 +55,13 @@ public class UsuarioController {
     @GetMapping("/all")
     public ResponseEntity<?> getAllUsuarios(@RequestParam(value = "filter", required = false, defaultValue = "") String filter) {
         List<User> usuarios = new ArrayList<>();
-        usuarioRepository.findAll().forEach(usuarios::add);
+        try
+        {
+            usuarioRepository.findAll().forEach(usuarios::add);
+
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
         return ResponseEntity.status(HttpStatus.OK).body(usuarios);
     }
 
@@ -64,28 +76,41 @@ public class UsuarioController {
     public ResponseEntity<?> getUsuarioById(@PathVariable Long id) {
         User user = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException(id));
         return ResponseEntity.ok().body(user);
-    }
+    }*/
 
     // Endpoint para crear un usuario
-    @CrossOrigin
     @Operation(summary = "Add a new User received as a parameter")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "User created", content = { @Content(mediaType = "application/json",schema = @Schema(implementation = User.class)) }),
         @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))),
         @ApiResponse(responseCode = "404", description = "User with given id already exist", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioFoundException.class))),
         @ApiResponse(responseCode = "406", description = "User nickname unavaliable", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
-    @PostMapping("/add")
+    @PostMapping("/register")
     public ResponseEntity<?> createUsuario(@RequestBody @Valid User usuario) {
-        if(usuarioRepository.existsById(usuario.getId())) {
-            throw new UsuarioFoundException(usuario.getId());
+        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()){
+            throw new UsuarioFoundException(usuario.getEmail());
         }else{
-            User newUser = usuarioRepository.save(usuario);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+            User user = new User();
+            user.setName(usuario.getName());
+            user.setIdentification(usuario.getIdentification());
+            user.setTelefono(usuario.getTelefono());
+            user.setEmail(usuario.getEmail());
+            if (usuario.getPassword() == null || usuario.getPassword().isEmpty()){
+                throw new UsuarioReserveException("Password");
+            }else if (usuario.getPassword().length() < 8){
+                throw new UserPasswordException("the size of the password must be greater than 8");
+            }
+            user.setPassword(passwordEncoder.encode(usuario.getPassword()));
+            user.setRole(Role.USER);
+            usuarioRepository.save(user);
+            String token = jwtService.generateToken(user);
+            return ResponseEntity.status(HttpStatus.CREATED).body(authenticationService.register(usuario)
+                    + "Este es el token: " + token);
         }
     }
 
      // Endpoint para actualizar un usuario por ID
-    @CrossOrigin
+    /*@CrossOrigin
     @Operation(summary = "Update an user received as a parameter")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "User updated", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = User.class)) }),
@@ -119,5 +144,5 @@ public class UsuarioController {
             usuarioRepository.deleteById(id);
             return ResponseEntity.status(HttpStatus.OK).body("User with id " + id +" deleted successfully");
         }
-    }
+    }*/
 }

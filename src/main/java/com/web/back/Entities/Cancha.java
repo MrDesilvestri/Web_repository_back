@@ -34,7 +34,7 @@ public class Cancha {
 
     @NotNull(message = "ubicacion is mandatory")
     @Size(max = 100)
-    @Column(name = "ubicacion")
+    @Column(name = "ubicacion", unique = true)
     private String ubicacion;
 
     @NotNull(message = "precio_hora is mandatory")
@@ -48,7 +48,6 @@ public class Cancha {
     private String imagenCancha;
 
     @NotNull(message = "tipo_cancha is mandatory")
-    @Size(max = 1)
     @Column(name = "tipo_cancha")
     private String tipoCancha;
 
