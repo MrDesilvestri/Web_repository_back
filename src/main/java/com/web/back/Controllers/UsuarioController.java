@@ -2,17 +2,21 @@ package com.web.back.Controllers;
 
 
 
+import com.web.back.Entities.ERole;
 import com.web.back.Entities.Role;
-import com.web.back.Exceptions.UserExceptions.UserPasswordException;
 import com.web.back.auth.AuthenticationRequest;
-import com.web.back.auth.AuthenticationResponse;
-import com.web.back.config.JwtService;
+import com.web.back.payload.request.SignupRequest;
+import com.web.back.payload.response.MessageResponse;
+import com.web.back.repository.RoleRepository;
+import com.web.back.security.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.web.back.Entities.User;
 import com.web.back.Exceptions.UserExceptions.UsuarioFoundException;
 import com.web.back.Exceptions.UserExceptions.UsuarioNotFoundException;
-import com.web.back.Exceptions.UserExceptions.UsuarioReserveException;
 import com.web.back.repository.UsuarioRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,23 +36,31 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @RestController
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/v1/users")
-@CrossOrigin
 @RequiredArgsConstructor
 public class UsuarioController {
-
-
-
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     private  UsuarioRepository usuarioRepository;
 
-    private final JwtService jwtService;
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    PasswordEncoder encoder;
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtUtils jwtUtils;
 
     // Endpoint para obtener todos los usuarios
     /*@CrossOrigin
@@ -92,41 +103,72 @@ public class UsuarioController {
         @ApiResponse(responseCode = "404", description = "User with given id already exist", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioFoundException.class))),
         @ApiResponse(responseCode = "406", description = "User nickname unavaliable", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
     @PostMapping("/register")
-    public AuthenticationResponse createUsuario(@RequestBody @Valid User usuario) {
-        if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()){
-            throw new UsuarioFoundException(usuario.getEmail());
-        }else{
-            User user = new User();
-            user.setName(usuario.getName());
-            user.setIdentification(usuario.getIdentification());
-            user.setTelefono(usuario.getTelefono());
-            user.setEmail(usuario.getEmail());
-            if (usuario.getPassword() == null || usuario.getPassword().isEmpty()){
-                throw new UsuarioReserveException("Password");
-            }else if (usuario.getPassword().length() < 8){
-                throw new UserPasswordException("the size of the password must be greater than 8");
-            }
-            user.setPassword(passwordEncoder.encode(usuario.getPassword()));
-            user.setRole(Role.USER);
-            usuarioRepository.save(user);
-            var token = jwtService.generateToken(user);
-            return AuthenticationResponse.builder()
-                    .user(user)
-                    .token(token)
-                    .build();
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+        if (usuarioRepository.existsByEmail(signUpRequest.getEmail())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Email is already in use!"));
         }
+
+        // Create new user's account
+        User user = new User(signUpRequest.getName(),
+        signUpRequest.getIdentification(),
+        signUpRequest.getTelefono(),
+        signUpRequest.getEmail(),
+        encoder.encode(signUpRequest.getPassword()));
+        Set<String> strRoles = signUpRequest.getRoles();
+        Set<Role> roles = new HashSet<>();
+
+        if (strRoles == null) {
+            Role userERole = roleRepository.findByName(ERole.ROLE_USER)
+                    .orElseThrow(() -> new RuntimeException("Error: ERole is not found."));
+            roles.add(userERole);
+        } else {
+            strRoles.forEach(role -> {
+                switch (role) {
+                    case "admin":
+                        Role adminERole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                                .orElseThrow(() -> new RuntimeException("Error: ERole is not found."));
+                        roles.add(adminERole);
+
+                        break;
+                    case "mod":
+                        Role modERole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+                                .orElseThrow(() -> new RuntimeException("Error: ERole is not found."));
+                        roles.add(modERole);
+                        break;
+                    default:
+                        Role userERole = roleRepository.findByName(ERole.ROLE_USER)
+                                .orElseThrow(() -> new RuntimeException("Error: ERole is not found."));
+                        roles.add(userERole);
+                }
+            });
+        }
+        user.setRoles(roles);
+        usuarioRepository.save(user);
+        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 
     //Endpoint para loguear un usuario
-    @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest usuario) {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(usuario.getEmail(), usuario.getPassword()));
-            var user = usuarioRepository.findByEmail(usuario.getEmail()).get();
-            var token = jwtService.generateToken(user);
-            return ResponseEntity.status(HttpStatus.OK).body(AuthenticationResponse.builder()
-                    .user(user)
-                    .token(token)
-                    .build());
+    /*@PostMapping("/login")
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody AuthenticationRequest loginRequest) {
+
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(new JwtResponse(jwt,
+                userDetails.getId(),
+                userDetails.getUsername(),
+                userDetails.getEmail(),
+                roles));
     }
 
      // Endpoint para actualizar un usuario por ID

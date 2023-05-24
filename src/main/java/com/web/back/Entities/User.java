@@ -1,12 +1,14 @@
 package com.web.back.Entities;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,8 +22,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "usuario")
-public class User implements UserDetails {
+@Table(name = "usuario",
+    uniqueConstraints = {
+                @UniqueConstraint(columnNames = "email"),
+                @UniqueConstraint(columnNames = "identification")
+        })
+public class User{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +35,7 @@ public class User implements UserDetails {
     private long id;
 
     @NotBlank
-    @Size(min = 3, max = 20)
+    @Size(max = 20)
     @Column(name = "nombre")
     private String name;
 
@@ -37,55 +43,35 @@ public class User implements UserDetails {
     @Column(name = "identification", unique = true)
     private String identification;
 
-    @NotEmpty(message = "email.not.empty")
-    @Email
-    @Column(name = "email", unique = true, nullable = false, length = 50)
-    private String email;
-
     @NotBlank
     @Column(name = "telefono")
     @Size(min = 10, max = 20)
     private String telefono;
 
+    @NotBlank
+    @Size(max = 50)
+    @Email
+    private String email;
 
-    @Column(name = "password")
+    @NotBlank
+    @Size(max = 120)
     private String password;
 
-    @Column(name = "user_role")
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(  name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Reserva> reservas;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
+    public User(String name, String identification, String telefono, String email, String password) {
+        this.name = name;
+        this.identification = identification;
+        this.telefono = telefono;
+        this.email = email;
+        this.password = password;
     }
 }

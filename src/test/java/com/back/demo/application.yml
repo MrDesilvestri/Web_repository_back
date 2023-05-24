@@ -12,3 +12,6 @@ spring:
       hibernate:
         format_sql: true
     database: mysql
+  app:
+    jwtSecret: 28482B4D6251655468576D5A7134743777217A25432646294A404E635266556A
+    jwtExpirationMs: 86400000
