@@ -57,7 +57,7 @@ public class CanchaController {
             @ApiResponse(responseCode = "404", description = "The field was not found", content = @Content) })
     @GetMapping("/{id}")
     public ResponseEntity<?> obtenerCancha(@Parameter(description = "id of field to be searched") @PathVariable long id) {
-        Cancha cancha = canchaRepository.findById(id).orElseThrow(() -> new CanchaFoundException(id));
+        Cancha cancha = canchaRepository.findById(id).orElseThrow(() -> new CanchaNotFoundException(id));
         return ResponseEntity.status(HttpStatus.OK).body(cancha);
     }
 
