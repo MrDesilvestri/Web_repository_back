@@ -6,9 +6,11 @@ import com.web.back.Entities.ERole;
 import com.web.back.Entities.Role;
 import com.web.back.auth.AuthenticationRequest;
 import com.web.back.payload.request.SignupRequest;
+import com.web.back.payload.response.JwtResponse;
 import com.web.back.payload.response.MessageResponse;
 import com.web.back.repository.RoleRepository;
 import com.web.back.security.jwt.JwtUtils;
+import com.web.back.security.services.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -150,7 +152,7 @@ public class UsuarioController {
     }
 
     //Endpoint para loguear un usuario
-    /*@PostMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody AuthenticationRequest loginRequest) {
 
         Authentication authentication = authenticationManager.authenticate(

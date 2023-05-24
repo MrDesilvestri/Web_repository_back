@@ -2,6 +2,7 @@ package com.web.back.security.jwt;
 
 
 import com.web.back.Entities.User;
+import com.web.back.security.services.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -27,7 +28,7 @@ public class JwtUtils {
 
   public String generateJwtToken(Authentication authentication) {
 
-    User userPrincipal = (User) authentication.getPrincipal();
+    UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
     return Jwts.builder()
             .setSubject((userPrincipal.getEmail()))
