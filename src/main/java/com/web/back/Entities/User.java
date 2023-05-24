@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
@@ -33,11 +34,11 @@ public class User implements UserDetails {
     private String name;
 
 
-    @Column(name = "identification", unique = true, nullable = false, length = 20)
+    @Column(name = "identification", unique = true)
     private String identification;
 
     @NotEmpty(message = "email.not.empty")
-    @Email(message = "email not valid")
+    @Email
     @Column(name = "email", unique = true, nullable = false, length = 50)
     private String email;
 
@@ -60,7 +61,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override

@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/field")
+@RequestMapping("/api/v1/field")
 public class CanchaController {
 
     @Autowired
@@ -76,6 +76,7 @@ public class CanchaController {
             return ResponseEntity.status(HttpStatus.CREATED).body(cancha);
         }
     }
+
 
     @CrossOrigin
     @Operation(summary = "Update a field in the catalog")

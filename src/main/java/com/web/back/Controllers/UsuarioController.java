@@ -4,12 +4,15 @@ package com.web.back.Controllers;
 
 import com.web.back.Entities.Role;
 import com.web.back.Exceptions.UserExceptions.UserPasswordException;
-import com.web.back.auth.AuthenticationService;
+import com.web.back.auth.AuthenticationRequest;
+import com.web.back.auth.AuthenticationResponse;
 import com.web.back.config.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,14 +39,17 @@ import jakarta.validation.Valid;
 @RequiredArgsConstructor
 public class UsuarioController {
 
-    @Autowired
-    private AuthenticationService authenticationService;
+
 
     private final PasswordEncoder passwordEncoder;
 
-    private final UsuarioRepository usuarioRepository;
+    @Autowired
+    private  UsuarioRepository usuarioRepository;
 
     private final JwtService jwtService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     // Endpoint para obtener todos los usuarios
     /*@CrossOrigin
@@ -86,7 +92,7 @@ public class UsuarioController {
         @ApiResponse(responseCode = "404", description = "User with given id already exist", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioFoundException.class))),
         @ApiResponse(responseCode = "406", description = "User nickname unavaliable", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
     @PostMapping("/register")
-    public ResponseEntity<?> createUsuario(@RequestBody @Valid User usuario) {
+    public AuthenticationResponse createUsuario(@RequestBody @Valid User usuario) {
         if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()){
             throw new UsuarioFoundException(usuario.getEmail());
         }else{
@@ -103,10 +109,24 @@ public class UsuarioController {
             user.setPassword(passwordEncoder.encode(usuario.getPassword()));
             user.setRole(Role.USER);
             usuarioRepository.save(user);
-            String token = jwtService.generateToken(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body(authenticationService.register(usuario)
-                    + "Este es el token: " + token);
+            var token = jwtService.generateToken(user);
+            return AuthenticationResponse.builder()
+                    .user(user)
+                    .token(token)
+                    .build();
         }
+    }
+
+    //Endpoint para loguear un usuario
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest usuario) {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(usuario.getEmail(), usuario.getPassword()));
+            var user = usuarioRepository.findByEmail(usuario.getEmail()).get();
+            var token = jwtService.generateToken(user);
+            return ResponseEntity.status(HttpStatus.OK).body(AuthenticationResponse.builder()
+                    .user(user)
+                    .token(token)
+                    .build());
     }
 
      // Endpoint para actualizar un usuario por ID

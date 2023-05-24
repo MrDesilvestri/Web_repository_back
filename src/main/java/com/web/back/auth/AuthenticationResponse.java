@@ -1,5 +1,6 @@
 package com.web.back.auth;
 
+import com.web.back.Entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,8 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest{
-
-        private String email;
-        private String password;
+public class AuthenticationResponse {
+    private String token;
+    private User user;
 }
