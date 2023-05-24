@@ -70,6 +70,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             ).authorizeRequests( authorizeRequests -> authorizeRequests
                     .requestMatchers("/api/v1/users/**").permitAll()
+                    .requestMatchers("/api/v1/field/**").permitAll()
                     .requestMatchers("/api/test/**").permitAll()
                     .anyRequest().authenticated()
             ).addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
