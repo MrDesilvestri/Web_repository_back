@@ -20,7 +20,6 @@ public class UsuarioControllerTest {
   @Autowired
   private UsuarioRepository usuarioRepository;
 
-
   @Test
   public void testFindUserById() {
     try {
@@ -35,7 +34,7 @@ public class UsuarioControllerTest {
   public void testAddUser() {
     try {
       User user = new User();
-      user.setNombre("Juan Perez");
+      user.setName("Juan Perez");
       user.setEmail("tomEm@hotmail.com");
       user.setTelefono("3222263066");
       user.setPassword("panchito123");
@@ -52,7 +51,7 @@ public class UsuarioControllerTest {
   public void testUpdateUser() {
     try {
       User user = usuarioRepository.findById(13L).get();
-      user.setNombre("Juan Perez");
+      user.setName("Juan Perez");
       user.setEmail("juanP@gmail.com");
       usuarioRepository.save(user);
       User userGuardado = usuarioRepository.findById(13L).get();

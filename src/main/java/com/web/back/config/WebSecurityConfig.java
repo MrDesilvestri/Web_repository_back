@@ -68,13 +68,13 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                 exceptionHandlingConfigurer.authenticationEntryPoint(unauthorizedHandler);
             }).sessionManagement( session -> session
                     .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            ).authorizeRequests( authorizeRequests -> authorizeRequests
+            ).authorizeHttpRequests( authorizeHttpRequests -> authorizeHttpRequests
                     .requestMatchers("/api/v1/users/**").permitAll()
-                    .requestMatchers("/api/v1/field/**").permitAll()
                     .requestMatchers("/api/test/**").permitAll()
                     .anyRequest().authenticated()
             ).addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-    
+
+
     http.authenticationProvider(authenticationProvider());
 
     http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

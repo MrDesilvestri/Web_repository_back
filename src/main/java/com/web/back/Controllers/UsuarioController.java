@@ -4,6 +4,7 @@ package com.web.back.Controllers;
 
 import com.web.back.Entities.ERole;
 import com.web.back.Entities.Role;
+import com.web.back.Exceptions.UserExceptions.UsuarioReserveException;
 import com.web.back.auth.AuthenticationRequest;
 import com.web.back.payload.request.SignupRequest;
 import com.web.back.payload.response.JwtResponse;
@@ -13,6 +14,7 @@ import com.web.back.security.jwt.JwtUtils;
 import com.web.back.security.services.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,11 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.web.back.Entities.User;
 import com.web.back.Exceptions.UserExceptions.UsuarioFoundException;
@@ -38,6 +36,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,7 +49,7 @@ import java.util.stream.Collectors;
 public class UsuarioController {
 
     @Autowired
-    private  UsuarioRepository usuarioRepository;
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -65,7 +64,7 @@ public class UsuarioController {
     JwtUtils jwtUtils;
 
     // Endpoint para obtener todos los usuarios
-    /*@CrossOrigin
+    @CrossOrigin
     @Operation(summary = "Gets the list of users")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Returns a list of users filtered by a parameter",
@@ -73,18 +72,18 @@ public class UsuarioController {
         @ApiResponse(responseCode = "400", description = "Bad request",content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
     @GetMapping("/all")
     public ResponseEntity<?> getAllUsuarios(@RequestParam(value = "filter", required = false, defaultValue = "") String filter) {
-        List<User> usuarios = new ArrayList<>();
         try
         {
-            usuarioRepository.findAll().forEach(usuarios::add);
-
+            List<User> usuarios = new ArrayList<>(usuarioRepository.findAll());
+            return ResponseEntity.status(HttpStatus.OK).body(usuarios);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-        return ResponseEntity.status(HttpStatus.OK).body(usuarios);
+
     }
 
-    // Endpoint para obtener un usuario por ID
+
+    //Endpoint para obtener un usuario por ID
     @Operation(summary = "Get an user by its id")
     @CrossOrigin
     @ApiResponses(value = {
@@ -95,7 +94,7 @@ public class UsuarioController {
     public ResponseEntity<?> getUsuarioById(@PathVariable Long id) {
         User user = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException(id));
         return ResponseEntity.ok().body(user);
-    }*/
+    }
 
     // Endpoint para crear un usuario
     @Operation(summary = "Add a new User received as a parameter")
@@ -173,9 +172,7 @@ public class UsuarioController {
                 roles));
     }
 
-     // Endpoint para actualizar un usuario por ID
-    /*@CrossOrigin
-    @Operation(summary = "Update an user received as a parameter")
+    /*@Operation(summary = "Update an user received as a parameter")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "User updated", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = User.class)) }),
         @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))),
@@ -183,12 +180,13 @@ public class UsuarioController {
     @PutMapping("/update/{id}")
     public static ResponseEntity<?> updateUsuario(@PathVariable Long id, @RequestBody User usuario) {
         User user = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException(id));
-        if(user != null){
-            throw new UsuarioNotFoundException(id);
-        }else{
-            usuarioRepository.save(usuario);
-            return ResponseEntity.status(HttpStatus.OK).body(usuario);
-        }
+        user.setName(usuario.getName());
+        user.setIdentification(usuario.getIdentification());
+        user.setTelefono(usuario.getTelefono());
+        user.setEmail(usuario.getEmail());
+        user.setPassword(usuario.getPassword());
+        usuarioRepository.save(user);
+        return ResponseEntity.ok().body(user);
     }
 
     // Endpoint para eliminar un usuario por ID
