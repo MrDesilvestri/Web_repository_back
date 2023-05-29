@@ -43,7 +43,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 4200)
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 4200)
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UsuarioController {
