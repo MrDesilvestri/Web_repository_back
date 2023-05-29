@@ -43,7 +43,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "*", maxAge = 4200)
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UsuarioController {
@@ -64,7 +64,6 @@ public class UsuarioController {
     JwtUtils jwtUtils;
 
     // Endpoint para obtener todos los usuarios
-    @CrossOrigin
     @Operation(summary = "Gets the list of users")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Returns a list of users filtered by a parameter",
@@ -79,13 +78,11 @@ public class UsuarioController {
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
-
     }
 
 
     //Endpoint para obtener un usuario por ID
     @Operation(summary = "Get an user by its id")
-    @CrossOrigin
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "User found", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = User.class)) }),
         @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))),
