@@ -8,22 +8,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 @Configuration
-@EnableGlobalMethodSecurity(
-    // securedEnabled = true,
-    // jsr250Enabled = true,
-    prePostEnabled = true)
-public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
+@EnableWebSecurity
+public class WebSecurityConfig extends AbstractHttpConfigurer<WebSecurityConfig, HttpSecurity> {
   @Autowired
   UserDetailsServiceImpl userDetailsService;
 
@@ -58,10 +60,17 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
+      CorsConfiguration corsConfiguration = new CorsConfiguration();
+      corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+      corsConfiguration.setAllowedOrigins(List.of("*"));
+      corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT","OPTIONS","PATCH", "DELETE"));
+      corsConfiguration.setAllowCredentials(true);
+      corsConfiguration.setExposedHeaders(List.of("Authorization"));
+      corsConfiguration.setMaxAge(3600L);
     http.cors(httpSecurityCorsConfigurer -> {
         httpSecurityCorsConfigurer.configurationSource(httpServletRequest -> {
           httpSecurityCorsConfigurer.disable();
-          return null;
+            return corsConfiguration;
         });
             }).csrf(AbstractHttpConfigurer::disable)
             .exceptionHandling( exceptionHandlingConfigurer -> {
@@ -74,9 +83,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
                     .anyRequest().authenticated()
             ).addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
-
     http.authenticationProvider(authenticationProvider());
-
     http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     
     return http.build();
