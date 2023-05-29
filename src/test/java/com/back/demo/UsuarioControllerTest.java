@@ -1,20 +1,16 @@
 package com.back.demo;
 
-import com.web.back.Controllers.UsuarioController;
 import com.web.back.Entities.User;
 import com.web.back.repository.UsuarioRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
 
 @SpringBootTest
-@ContextConfiguration(classes = {com.web.back.BackApplication.class})
+@ContextConfiguration(classes = { com.web.back.BackApplication.class })
 public class UsuarioControllerTest {
 
   @Autowired

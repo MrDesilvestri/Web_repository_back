@@ -1,10 +1,7 @@
 package com.web.back.Controllers;
 
-
-
 import com.web.back.Entities.ERole;
 import com.web.back.Entities.Role;
-import com.web.back.Exceptions.UserExceptions.UsuarioReserveException;
 import com.web.back.auth.AuthenticationRequest;
 import com.web.back.payload.request.SignupRequest;
 import com.web.back.payload.response.JwtResponse;
@@ -48,122 +45,132 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UsuarioController {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+        @Autowired
+        private UsuarioRepository usuarioRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+        @Autowired
+        private RoleRepository roleRepository;
 
-    @Autowired
-    PasswordEncoder encoder;
+        @Autowired
+        PasswordEncoder encoder;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+        @Autowired
+        private AuthenticationManager authenticationManager;
 
-    @Autowired
-    JwtUtils jwtUtils;
+        @Autowired
+        JwtUtils jwtUtils;
 
-    // Endpoint para obtener todos los usuarios
-    @Operation(summary = "Gets the list of users")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Returns a list of users filtered by a parameter",
-         content = { @Content(mediaType = "application/json",schema = @Schema(implementation = User.class)) }),
-        @ApiResponse(responseCode = "400", description = "Bad request",content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
-    @GetMapping("/all")
-    public ResponseEntity<?> getAllUsuarios(@RequestParam(value = "filter", required = false, defaultValue = "") String filter) {
-        try
-        {
-            List<User> usuarios = new ArrayList<>(usuarioRepository.findAll());
-            return ResponseEntity.status(HttpStatus.OK).body(usuarios);
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }
-    }
-
-
-    //Endpoint para obtener un usuario por ID
-    @Operation(summary = "Get an user by its id")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "User found", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = User.class)) }),
-        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))),
-        @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUsuarioById(@PathVariable Long id) {
-        User user = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException(id));
-        return ResponseEntity.ok().body(user);
-    }
-
-    // Endpoint para crear un usuario
-    @Operation(summary = "Add a new User received as a parameter")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "User created", content = { @Content(mediaType = "application/json",schema = @Schema(implementation = User.class)) }),
-        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))),
-        @ApiResponse(responseCode = "404", description = "User with given id already exist", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioFoundException.class))),
-        @ApiResponse(responseCode = "406", description = "User nickname unavaliable", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
-    @CrossOrigin(origins = "http://localhost:4200")
-    @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        if (usuarioRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
-        }
-
-        // Create new user's account
-        User user = new User(signUpRequest.getName(),
-        signUpRequest.getIdentification(),
-        signUpRequest.getTelefono(),
-        signUpRequest.getEmail(),
-        encoder.encode(signUpRequest.getPassword()));
-        Set<String> strRoles = signUpRequest.getRoles();
-        Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null) {
-            Role userERole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: ERole is not found."));
-            roles.add(userERole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "admin":
-                        Role adminERole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: ERole is not found."));
-                        roles.add(adminERole);
-
-                        break;
-                    case "mod":
-                        Role modERole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-                                .orElseThrow(() -> new RuntimeException("Error: ERole is not found."));
-                        roles.add(modERole);
-                        break;
-                    default:
-                        Role userERole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: ERole is not found."));
-                        roles.add(userERole);
+        // Endpoint para obtener todos los usuarios
+        @Operation(summary = "Gets the list of users")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Returns a list of users filtered by a parameter", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = User.class)) }),
+                        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
+        @GetMapping("/all")
+        public ResponseEntity<?> getAllUsuarios(
+                        @RequestParam(value = "filter", required = false, defaultValue = "") String filter) {
+                try {
+                        List<User> usuarios = new ArrayList<>(usuarioRepository.findAll());
+                        return ResponseEntity.status(HttpStatus.OK).body(usuarios);
+                } catch (Exception e) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
                 }
-            });
         }
-        user.setRoles(roles);
-        usuarioRepository.save(user);
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
-    }
 
-    //Endpoint para loguear un usuario
-    @CrossOrigin(origins = "http://localhost:4200")
-    @PostMapping("/login")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody AuthenticationRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt = jwtUtils.generateJwtToken(authentication);
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(new JwtResponse(jwt,
-                userDetails.getId(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                roles));
-    }
+        // Endpoint para obtener un usuario por ID
+        @Operation(summary = "Get an user by its id")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "User found", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = User.class)) }),
+                        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))),
+                        @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
+        @GetMapping("/{id}")
+        public ResponseEntity<?> getUsuarioById(@PathVariable Long id) {
+                User user = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException(id));
+                return ResponseEntity.ok().body(user);
+        }
+
+        // Endpoint para crear un usuario
+        @Operation(summary = "Add a new User received as a parameter")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "201", description = "User created", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = User.class)) }),
+                        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))),
+                        @ApiResponse(responseCode = "404", description = "User with given id already exist", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioFoundException.class))),
+                        @ApiResponse(responseCode = "406", description = "User nickname unavaliable", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
+        @CrossOrigin(origins = "http://localhost:4200")
+        @PostMapping("/register")
+        public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+                if (usuarioRepository.existsByEmail(signUpRequest.getEmail())) {
+                        return ResponseEntity
+                                        .badRequest()
+                                        .body(new MessageResponse("Error: Email is already in use!"));
+                }
+                if (usuarioRepository.existsByIdentification(signUpRequest.getIdentification())) {
+                        return ResponseEntity
+                                        .badRequest()
+                                        .body(new MessageResponse("Error: Identification is already in use!"));
+                }
+
+                // Create new user's account
+                User user = new User(signUpRequest.getName(),
+                                signUpRequest.getIdentification(),
+                                signUpRequest.getTelefono(),
+                                signUpRequest.getEmail(),
+                                encoder.encode(signUpRequest.getPassword()));
+                Set<String> strRoles = signUpRequest.getRoles();
+                Set<Role> roles = new HashSet<>();
+
+                if (strRoles == null) {
+                        Role userERole = roleRepository.findByName(ERole.ROLE_USER)
+                                        .orElseThrow(() -> new RuntimeException("Error: ERole is not found."));
+                        roles.add(userERole);
+                } else {
+                        strRoles.forEach(role -> {
+                                switch (role) {
+                                        case "admin":
+                                                Role adminERole = roleRepository.findByName(ERole.ROLE_ADMIN)
+                                                                .orElseThrow(() -> new RuntimeException(
+                                                                                "Error: ERole is not found."));
+                                                roles.add(adminERole);
+
+                                                break;
+                                        case "mod":
+                                                Role modERole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+                                                                .orElseThrow(() -> new RuntimeException(
+                                                                                "Error: ERole is not found."));
+                                                roles.add(modERole);
+                                                break;
+                                        default:
+                                                Role userERole = roleRepository.findByName(ERole.ROLE_USER)
+                                                                .orElseThrow(() -> new RuntimeException(
+                                                                                "Error: ERole is not found."));
+                                                roles.add(userERole);
+                                }
+                        });
+                }
+                user.setRoles(roles);
+                usuarioRepository.save(user);
+                return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        }
+
+        // Endpoint para loguear un usuario
+        @CrossOrigin(origins = "http://localhost:4200")
+        @PostMapping("/login")
+        public ResponseEntity<?> authenticateUser(@Valid @RequestBody AuthenticationRequest loginRequest) {
+                Authentication authentication = authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
+                                                loginRequest.getPassword()));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                String jwt = jwtUtils.generateJwtToken(authentication);
+                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+                List<String> roles = userDetails.getAuthorities().stream()
+                                .map(GrantedAuthority::getAuthority)
+                                .collect(Collectors.toList());
+                return ResponseEntity.ok(new JwtResponse(jwt,
+                                userDetails.getId(),
+                                userDetails.getUsername(),
+                                userDetails.getEmail(),
+                                roles));
+        }
 }

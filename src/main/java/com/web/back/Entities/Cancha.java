@@ -6,8 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.math.BigDecimal;
-
 @Entity
 @Getter
 @Setter
@@ -28,7 +26,7 @@ public class Cancha {
     private String nombre;
 
     @NotNull(message = "descripcion is mandatory")
-    @Size( max = 250)
+    @Size(max = 250)
     @Column(name = "descripcion")
     private String descripcion;
 

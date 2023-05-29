@@ -1,14 +1,10 @@
 package com.web.back.payload.request;
 
-
-
-import com.web.back.Entities.Reserva;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.util.List;
 import java.util.Set;
 
 @Data

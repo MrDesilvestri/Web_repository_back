@@ -2,6 +2,7 @@ package com.web.back.config;
 
 import com.web.back.security.jwt.AuthEntryPointJwt;
 import com.web.back.security.services.UserDetailsServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig implements WebMvcConfigurer {
@@ -31,27 +30,26 @@ public class WebSecurityConfig implements WebMvcConfigurer {
   private AuthEntryPointJwt unauthorizedHandler;
 
   @Bean
-  public JwtAuthenticationFilter authenticationJwtTokenFilter() {
+  JwtAuthenticationFilter authenticationJwtTokenFilter() {
     return new JwtAuthenticationFilter();
   }
 
   @Bean
-  public DaoAuthenticationProvider authenticationProvider() {
+  DaoAuthenticationProvider authenticationProvider() {
     DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
     authProvider.setUserDetailsService(userDetailsService);
     authProvider.setPasswordEncoder(passwordEncoder());
-
     return authProvider;
   }
 
   @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+  AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
     return authConfig.getAuthenticationManager();
   }
 
   @Bean
-  public PasswordEncoder passwordEncoder() {
+  PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
 
@@ -61,7 +59,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
   }
 
   @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
     http.cors(httpSecurityCorsConfigurer -> {
       httpSecurityCorsConfigurer.configurationSource(httpServletRequest -> {

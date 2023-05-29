@@ -1,10 +1,11 @@
 package com.web.back.security.services;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.web.back.Entities.User;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +15,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class UserDetailsImpl implements UserDetails {
   private static final long serialVersionUID = 1L;
@@ -35,7 +37,7 @@ public class UserDetailsImpl implements UserDetails {
   private Collection<? extends GrantedAuthority> authorities;
 
   public UserDetailsImpl(Long id, String name, String identification, String telefono, String email,
-                         String password, Collection<? extends GrantedAuthority> authorities) {
+      String password, Collection<? extends GrantedAuthority> authorities) {
     this.id = id;
     this.name = name;
     this.identification = identification;
@@ -56,10 +58,9 @@ public class UserDetailsImpl implements UserDetails {
         user.getIdentification(),
         user.getTelefono(),
         user.getEmail(),
-        user.getPassword(), 
+        user.getPassword(),
         authorities);
   }
-
 
   @Override
   public String getUsername() {

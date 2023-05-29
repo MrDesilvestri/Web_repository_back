@@ -1,7 +1,5 @@
 package com.web.back.security.jwt;
 
-
-import com.web.back.Entities.User;
 import com.web.back.security.services.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -31,10 +29,10 @@ public class JwtUtils {
     UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
     return Jwts.builder()
-            .setSubject((userPrincipal.getEmail()))
-            .setIssuedAt(new Date())
-            .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-            .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
+        .setSubject((userPrincipal.getEmail()))
+        .setIssuedAt(new Date())
+        .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+        .signWith(getSigningKey(), SignatureAlgorithm.HS256).compact();
   }
 
   public String getUserNameFromJwtToken(String token) {
@@ -59,6 +57,7 @@ public class JwtUtils {
 
     return false;
   }
+
   private Key getSigningKey() {
     byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
     return Keys.hmacShaKeyFor(keyBytes);
