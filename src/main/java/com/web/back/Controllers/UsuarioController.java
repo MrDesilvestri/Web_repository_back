@@ -40,7 +40,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "*", maxAge = 4200)
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UsuarioController {
@@ -98,7 +98,6 @@ public class UsuarioController {
                         @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))),
                         @ApiResponse(responseCode = "404", description = "User with given id already exist", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioFoundException.class))),
                         @ApiResponse(responseCode = "406", description = "User nickname unavaliable", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
-        @CrossOrigin(origins = "http://localhost:4200")
         @PostMapping("/register")
         public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
                 if (usuarioRepository.existsByEmail(signUpRequest.getEmail())) {
@@ -155,7 +154,6 @@ public class UsuarioController {
         }
 
         // Endpoint para loguear un usuario
-        @CrossOrigin(origins = "http://localhost:4200")
         @PostMapping("/login")
         public ResponseEntity<?> authenticateUser(@Valid @RequestBody AuthenticationRequest loginRequest) {
                 Authentication authentication = authenticationManager.authenticate(
