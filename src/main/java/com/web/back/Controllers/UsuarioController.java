@@ -43,7 +43,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 4200)
+@CrossOrigin(origins = "*", maxAge = 4200)
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UsuarioController {
@@ -100,6 +100,7 @@ public class UsuarioController {
         @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))),
         @ApiResponse(responseCode = "404", description = "User with given id already exist", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioFoundException.class))),
         @ApiResponse(responseCode = "406", description = "User nickname unavaliable", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (usuarioRepository.existsByEmail(signUpRequest.getEmail())) {
@@ -148,60 +149,21 @@ public class UsuarioController {
     }
 
     //Endpoint para loguear un usuario
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody AuthenticationRequest loginRequest) {
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
-
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
                 roles));
     }
-
-    /*@Operation(summary = "Update an user received as a parameter")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "User updated", content = { @Content(mediaType = "application/json", schema = @Schema(implementation = User.class)) }),
-        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))),
-        @ApiResponse(responseCode = "404", description = "User not found",content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
-    @PutMapping("/update/{id}")
-    public static ResponseEntity<?> updateUsuario(@PathVariable Long id, @RequestBody User usuario) {
-        User user = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException(id));
-        user.setName(usuario.getName());
-        user.setIdentification(usuario.getIdentification());
-        user.setTelefono(usuario.getTelefono());
-        user.setEmail(usuario.getEmail());
-        user.setPassword(usuario.getPassword());
-        usuarioRepository.save(user);
-        return ResponseEntity.ok().body(user);
-    }
-
-    // Endpoint para eliminar un usuario por ID
-    @CrossOrigin
-    @Operation(summary = "Delete a user by its id")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "User deleted", content = @Content),
-        @ApiResponse(responseCode = "400", description = "Bad request", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))),
-        @ApiResponse(responseCode = "404", description = "user not found", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))),
-        @ApiResponse(responseCode = "406", description = "user has a reserve asociated", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioReserveException.class))) })
-    @DeleteMapping("/{id}/delete")
-    public ResponseEntity<?> deleteUsuario(@PathVariable Long id) {
-        User user = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException(id));
-        if(user != null){
-            throw new UsuarioNotFoundException(id);
-        }else{
-            usuarioRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.OK).body("User with id " + id +" deleted successfully");
-        }
-    }*/
 }

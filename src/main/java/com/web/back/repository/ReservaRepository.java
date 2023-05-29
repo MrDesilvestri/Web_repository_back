@@ -3,12 +3,12 @@ package com.web.back.repository;
 
 
 import com.web.back.Entities.Reserva;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ReservaRepository extends CrudRepository<Reserva, Long> {
+public interface ReservaRepository extends JpaRepository<Reserva, Long> {
 
     @Query(value = "SELECT * FROM reserva WHERE id_cancha = ?1", nativeQuery = true)
     Iterable<Reserva> findAllByIdCancha(Long idCancha);
