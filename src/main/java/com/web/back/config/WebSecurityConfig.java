@@ -1,6 +1,5 @@
 package com.web.back.config;
 
-
 import com.web.back.security.jwt.AuthEntryPointJwt;
 import com.web.back.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -20,12 +17,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfig extends AbstractHttpConfigurer<WebSecurityConfig, HttpSecurity> {
+public class WebSecurityConfig implements WebMvcConfigurer {
   @Autowired
   UserDetailsServiceImpl userDetailsService;
 
@@ -39,12 +37,12 @@ public class WebSecurityConfig extends AbstractHttpConfigurer<WebSecurityConfig,
 
   @Bean
   public DaoAuthenticationProvider authenticationProvider() {
-      DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-       
-      authProvider.setUserDetailsService(userDetailsService);
-      authProvider.setPasswordEncoder(passwordEncoder());
-   
-      return authProvider;
+    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+
+    authProvider.setUserDetailsService(userDetailsService);
+    authProvider.setPasswordEncoder(passwordEncoder());
+
+    return authProvider;
   }
 
   @Bean
@@ -57,35 +55,33 @@ public class WebSecurityConfig extends AbstractHttpConfigurer<WebSecurityConfig,
     return new BCryptPasswordEncoder();
   }
 
+  @Override
+  public void addCorsMappings(org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
+    registry.addMapping("/**").allowedMethods("*").allowedOrigins("*");
+  }
+
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-      CorsConfiguration corsConfiguration = new CorsConfiguration();
-      corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
-      corsConfiguration.setAllowedOrigins(List.of("*"));
-      corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PUT","OPTIONS","PATCH", "DELETE"));
-      corsConfiguration.setAllowCredentials(true);
-      corsConfiguration.setExposedHeaders(List.of("Authorization"));
-      corsConfiguration.setMaxAge(3600L);
     http.cors(httpSecurityCorsConfigurer -> {
-        httpSecurityCorsConfigurer.configurationSource(httpServletRequest -> {
-          httpSecurityCorsConfigurer.disable();
-            return corsConfiguration;
-        });
-            }).csrf(AbstractHttpConfigurer::disable)
-            .exceptionHandling( exceptionHandlingConfigurer -> {
-                exceptionHandlingConfigurer.authenticationEntryPoint(unauthorizedHandler);
-            }).sessionManagement( session -> session
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            ).authorizeHttpRequests( authorizeHttpRequests -> authorizeHttpRequests
-                    .requestMatchers("/api/v1/users/**").permitAll()
-                    .requestMatchers("/api/test/**").permitAll()
-                    .anyRequest().authenticated()
-            ).addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+      httpSecurityCorsConfigurer.configurationSource(httpServletRequest -> {
+        httpSecurityCorsConfigurer.disable();
+        return new CorsConfiguration().applyPermitDefaultValues();
+      });
+    }).csrf(AbstractHttpConfigurer::disable)
+        .exceptionHandling(exceptionHandlingConfigurer -> {
+          exceptionHandlingConfigurer.authenticationEntryPoint(unauthorizedHandler);
+        }).sessionManagement(session -> session
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
+            .requestMatchers("/api/v1/users/**").permitAll()
+            .requestMatchers("/api/test/**").permitAll()
+            .anyRequest().authenticated())
+        .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
     http.authenticationProvider(authenticationProvider());
     http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
-    
+
     return http.build();
   }
 }
