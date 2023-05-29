@@ -63,6 +63,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
 
     http.cors(httpSecurityCorsConfigurer -> {
       httpSecurityCorsConfigurer.configurationSource(httpServletRequest -> {
+        httpServletRequest.setAttribute("Access-Control-Expose-Headers", "Authorization, Content-Type");
         httpSecurityCorsConfigurer.disable();
         return new CorsConfiguration().applyPermitDefaultValues();
       });
