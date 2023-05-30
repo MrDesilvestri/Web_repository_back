@@ -100,6 +100,7 @@ public class UsuarioController {
                         @ApiResponse(responseCode = "406", description = "User nickname unavaliable", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UsuarioNotFoundException.class))) })
         @PostMapping("/register")
         public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+                System.out.println(signUpRequest);
                 if (usuarioRepository.existsByEmail(signUpRequest.getEmail())) {
                         return ResponseEntity
                                         .badRequest()
