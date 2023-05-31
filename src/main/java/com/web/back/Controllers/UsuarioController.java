@@ -133,7 +133,6 @@ public class UsuarioController {
                                                                 .orElseThrow(() -> new RuntimeException(
                                                                                 "Error: ERole is not found."));
                                                 roles.add(adminERole);
-
                                                 break;
                                         case "mod":
                                                 Role modERole = roleRepository.findByName(ERole.ROLE_MODERATOR)
